@@ -1,0 +1,16 @@
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rem;
+  color: blue;
+}
+
+.user .user__image {
+  display: none;
+}
+
+.user .user__image img {
+  width: 10rem;
+  height: 10rem;
+}
