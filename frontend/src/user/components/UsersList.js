@@ -5,6 +5,7 @@ import styled from 'styled-components';
 // import classes from './UsersList.module.css';
 
 const StyledUsers = styled.ul`
+  padding: 15rem 0 10rem;
   list-style-type: none;
 `;
 

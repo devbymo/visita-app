@@ -82,7 +82,7 @@ const StyledUserItem = styled.li`
   }
 
   // 1200px or smaller
-  @media only screen and (max-width: 700px) {
+  @media only screen and (max-width: 900px) {
     width: 90vw;
   }
 

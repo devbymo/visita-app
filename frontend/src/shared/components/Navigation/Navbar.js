@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import Overlay from '../UI/Overlay';
 
 const StyledNavbar = styled.nav`
   height: 80px;
@@ -13,6 +14,7 @@ const StyledNavbar = styled.nav`
   align-items: center;
   padding: 0 4rem;
   font-size: 2.4rem;
+  position: fixed;
 
   .nav-logo {
     font-size: 4rem;
@@ -48,8 +50,8 @@ const StyledNavbar = styled.nav`
     cursor: pointer;
   }
 
-  @media only screen and (max-width: 500px) {
-    position: relative;
+  @media only screen and (max-width: 950px) {
+    position: fixed;
 
     .nav-links {
       display: flex;
@@ -98,31 +100,42 @@ const Navbar = () => {
 
   const closeMenu = () => {
     setOpen(false);
+    console.log('close');
   };
 
   return (
     <StyledNavbar className="navbar">
-      <Link to="/" className="nav-logo">
+      <Overlay show={open} closeMenu={closeMenu} />
+      <NavLink to="/" className="nav-logo">
         Visita
-      </Link>
+      </NavLink>
       <div onClick={handleClick} className="nav-icon">
         {open ? <FiX /> : <FiMenu />}
       </div>
       <ul className={open ? 'nav-links active' : 'nav-links'}>
         <li className="nav-item">
-          <Link to="/" className="nav-link" onClick={closeMenu}>
-            Users
-          </Link>
+          <NavLink to="/" className="nav-link" onClick={closeMenu}>
+            All Users
+          </NavLink>
         </li>
         <li className="nav-item">
-          <Link to="/about" className="nav-link" onClick={closeMenu}>
+          <NavLink
+            to="/user-id/places"
+            className="nav-link"
+            onClick={closeMenu}
+          >
+            My Places
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink to="/places/new" className="nav-link" onClick={closeMenu}>
+            Add Place
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink to="/auth" className="nav-link" onClick={closeMenu}>
             Signup/Login
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link to="/shop" className="nav-link" onClick={closeMenu}>
-            New
-          </Link>
+          </NavLink>
         </li>
       </ul>
     </StyledNavbar>
