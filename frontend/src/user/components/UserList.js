@@ -2,14 +2,12 @@ import React from 'react';
 import UserItem from './UserItem';
 import styled from 'styled-components';
 
-// import classes from './UsersList.module.css';
-
 const StyledUsers = styled.ul`
   padding: 15rem 0 10rem;
   list-style-type: none;
 `;
 
-const UsersList = (props) => {
+const UserList = (props) => {
   if (props.users.length === 0) {
     return (
       <div className="users-container">
@@ -34,4 +32,4 @@ const UsersList = (props) => {
   );
 };
 
-export default UsersList;
+export default UserList;

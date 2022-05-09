@@ -28,10 +28,6 @@ const StyledUserItem = styled.li`
   background-color: #fff;
   cursor: pointer;
 
-  /* a {
-    text-decoration: none;
-  } */
-
   &:hover {
     filter: brightness(120%);
   }
@@ -60,19 +56,19 @@ const StyledUserItem = styled.li`
 
     .user__name {
       font-style: italic;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 3rem;
     }
 
     .user__address {
       margin: 1.5rem 0;
       font-size: 1.8rem;
-      font-weight: 100;
+      font-weight: 400;
     }
 
     .user__places {
       font-size: 1.8rem;
-      font-weight: 100;
+      font-weight: 400;
     }
   }
 
@@ -95,6 +91,8 @@ const StyledUserItem = styled.li`
 `;
 
 const UserItem = (props) => {
+  console.log(props.id);
+
   return (
     <Wrapper>
       <Link to={`/${props.id}/places`}>

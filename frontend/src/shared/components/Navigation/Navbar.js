@@ -44,6 +44,10 @@ const StyledNavbar = styled.nav`
     color: salmon;
   }
 
+  .nav-link-active {
+    color: salmon;
+  }
+
   .nav-icon {
     display: none;
     font-size: 4rem;
@@ -114,7 +118,12 @@ const Navbar = () => {
       </div>
       <ul className={open ? 'nav-links active' : 'nav-links'}>
         <li className="nav-item">
-          <NavLink to="/" className="nav-link" onClick={closeMenu}>
+          <NavLink
+            to="/"
+            className="nav-link"
+            // activeClassName={'nav-link-active'}
+            onClick={closeMenu}
+          >
             All Users
           </NavLink>
         </li>
@@ -122,18 +131,29 @@ const Navbar = () => {
           <NavLink
             to="/user-id/places"
             className="nav-link"
+            activeClassName={'nav-link-active'}
             onClick={closeMenu}
           >
             My Places
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/places/new" className="nav-link" onClick={closeMenu}>
+          <NavLink
+            to="/places/new"
+            className="nav-link"
+            activeClassName={'nav-link-active'}
+            onClick={closeMenu}
+          >
             Add Place
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/auth" className="nav-link" onClick={closeMenu}>
+          <NavLink
+            to="/auth"
+            className="nav-link"
+            activeClassName={'nav-link-active'}
+            onClick={closeMenu}
+          >
             Signup/Login
           </NavLink>
         </li>
