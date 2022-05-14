@@ -8,15 +8,15 @@ const StyledModal = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50vw;
+  width: 45vw;
   height: 45vh;
-  color: white;
   font-size: 4rem;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: white;
   overflow: hidden;
+  color: black;
 
   .Content {
     width: 100%;
@@ -31,6 +31,11 @@ const StyledModal = styled.div`
     right: 2rem;
     bottom: 2rem;
     color: white;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
   }
 
   z-index: 1000;
@@ -74,6 +79,9 @@ const Modal = (props) => {
       <Overlay show={props.show} closeModal={props.closeModal}></Overlay>
       <StyledModal>
         <div className="Content">{props.children}</div>
+        {/* <div className="Content">
+          <img src="./../../../Images/fakeMapView.png" alt="Place On Map" />
+        </div> */}
         <Button onClick={props.closeModal}>Close</Button>
       </StyledModal>
     </>

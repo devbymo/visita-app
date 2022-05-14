@@ -5,9 +5,10 @@ import MapView from '../../shared/components/Map/MapView';
 import Modal from '../../shared/components/UI/Modal';
 import Overlay from '../../shared/components/UI/Overlay';
 import Map from '../../shared/components/Map/Map';
+import img from './../../Images/fakeMapView.png';
 
 const StyledPlaceItem = styled.li`
-  width: 50vw;
+  width: 40vw;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
   overflow: hidden;
@@ -72,25 +73,29 @@ const StyledPlaceItem = styled.li`
 const PlaceItem = (props) => {
   const [showModal, setShowModal] = useState(false);
 
-  const openModal = () => {
+  const openModelHandler = () => {
     setShowModal(true);
   };
 
-  const closeModal = () => {
+  const closeModalHandler = () => {
     setShowModal(false);
   };
 
   return (
     <StyledPlaceItem className="place-item">
+      {/* Modal */}
       {showModal && (
-        <Modal closeModal={closeModal} show={showModal}>
+        <Modal closeModal={closeModalHandler} show={showModal}>
           {/* <MapView /> */}
-          <Map />
+          {/* <Map /> */}
+          <img src={img} alt="Place" />
         </Modal>
       )}
+      {/* Image */}
       <div className="place-item__image">
         <img src={props.imageURL} alt={props.placeName} />
       </div>
+      {/* Info */}
       <div className="place-item__info">
         <h2 className="place-item__name">{props.placeName} &#127919;</h2>
         <p className="place-item__address">
@@ -101,8 +106,9 @@ const PlaceItem = (props) => {
           {props.rating} {props.rating > 1 ? 'Stars' : 'Star'} ⭐
         </p>
       </div>
+      {/* Actions */}
       <div className="place-item__actions">
-        <Button inverse onClick={openModal}>
+        <Button inverse onClick={openModelHandler}>
           VIEW ON MAP
         </Button>
         <Button to={`/places/${props.id}`}>EDIT</Button>
