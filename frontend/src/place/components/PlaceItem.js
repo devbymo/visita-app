@@ -4,6 +4,7 @@ import Button from '../../shared/components/Button/Button';
 import MapView from '../../shared/components/Map/MapView';
 import Modal from '../../shared/components/UI/Modal';
 import Overlay from '../../shared/components/UI/Overlay';
+import Map from '../../shared/components/Map/Map';
 
 const StyledPlaceItem = styled.li`
   width: 50vw;
@@ -83,7 +84,8 @@ const PlaceItem = (props) => {
     <StyledPlaceItem className="place-item">
       {showModal && (
         <Modal closeModal={closeModal} show={showModal}>
-          <MapView />
+          {/* <MapView /> */}
+          <Map />
         </Modal>
       )}
       <div className="place-item__image">
