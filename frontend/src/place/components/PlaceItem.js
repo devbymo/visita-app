@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../shared/components/Button/Button';
+import MapView from '../../shared/components/Map/MapView';
 import Modal from '../../shared/components/UI/Modal';
 import Overlay from '../../shared/components/UI/Overlay';
 
 const StyledPlaceItem = styled.li`
-  width: 40vw;
+  width: 50vw;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
   overflow: hidden;
@@ -70,12 +71,21 @@ const StyledPlaceItem = styled.li`
 const PlaceItem = (props) => {
   const [showModal, setShowModal] = useState(false);
 
-  const toggleModal = () => setShowModal((prevState) => !prevState);
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <StyledPlaceItem className="place-item">
-      <Modal showModal={showModal} toggleModal={toggleModal} />
-      <Overlay show={showModal} />
+      {showModal && (
+        <Modal closeModal={closeModal} show={showModal}>
+          <MapView />
+        </Modal>
+      )}
       <div className="place-item__image">
         <img src={props.imageURL} alt={props.placeName} />
       </div>
@@ -90,7 +100,7 @@ const PlaceItem = (props) => {
         </p>
       </div>
       <div className="place-item__actions">
-        <Button inverse onClick={toggleModal}>
+        <Button inverse onClick={openModal}>
           VIEW ON MAP
         </Button>
         <Button to={`/places/${props.id}`}>EDIT</Button>

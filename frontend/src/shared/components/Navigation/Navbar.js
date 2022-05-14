@@ -104,7 +104,6 @@ const Navbar = () => {
 
   const closeMenu = () => {
     setOpen(false);
-    console.log('close');
   };
 
   return (

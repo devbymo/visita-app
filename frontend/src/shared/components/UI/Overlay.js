@@ -17,7 +17,9 @@ const StyledOverlay = styled.div`
 
 const Overlay = (props) => {
   const content = (
-    <StyledOverlay show={props.show} onClick={props.closeMenu}></StyledOverlay>
+    <StyledOverlay show={props.show} onClick={props.closeMenu}>
+      {props.children}
+    </StyledOverlay>
   );
 
   return ReactDOM.createPortal(

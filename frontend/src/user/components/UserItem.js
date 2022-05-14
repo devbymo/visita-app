@@ -91,8 +91,6 @@ const StyledUserItem = styled.li`
 `;
 
 const UserItem = (props) => {
-  console.log(props.id);
-
   return (
     <Wrapper>
       <Link to={`/${props.id}/places`}>
