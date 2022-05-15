@@ -99,7 +99,7 @@ const UserItem = (props) => {
             <img src={props.image} alt="User" className="user__image" />
           </div>
           <div className="user__info">
-            <h2 className="user__name">{props.name} &#11088;</h2>
+            <h2 className="user__name">{props.name} ✔</h2>
             <p className="user__address">
               {props.country}/{props.city} &#127962;
             </p>

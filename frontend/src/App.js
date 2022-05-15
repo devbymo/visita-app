@@ -5,6 +5,7 @@ import Navbar from './shared/components/Navigation/Navbar';
 import TestComponent from './user/components/TestComponent';
 import NotFound from './shared/components/NotFound/NotFound';
 import UserPlaces from './place/pages/UserPlaces';
+import NewPlace from './place/pages/NewPlace';
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
         </Route>
         <Route path="/:userId/places" exact>
           <UserPlaces />
+        </Route>
+        <Route path="/places/new" exact>
+          <NewPlace />
         </Route>
         <Route path="*">
           <NotFound />

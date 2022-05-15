@@ -4,12 +4,13 @@ import styled from 'styled-components';
 import Button from '../Button/Button';
 
 const StyledModal = styled.div`
+  width: 50vw;
+  height: 50vh;
+  border: 3px solid blue;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 45vw;
-  height: 45vh;
   font-size: 4rem;
   display: flex;
   justify-content: center;
@@ -28,8 +29,14 @@ const StyledModal = styled.div`
 
   button {
     position: absolute;
-    right: 2rem;
+    left: 2rem;
     bottom: 2rem;
+    background-color: white;
+    color: black;
+  }
+
+  button:hover {
+    background-color: black;
     color: white;
   }
 

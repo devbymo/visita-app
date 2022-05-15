@@ -11,6 +11,7 @@ const StyledPlaceItem = styled.li`
   width: 40vw;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
+  text-align: center;
   overflow: hidden;
 
   &:not(:last-child) {
@@ -46,17 +47,17 @@ const StyledPlaceItem = styled.li`
 
     .place-item__address {
       font-size: 1.9rem;
-      font-weight: 400;
+      font-weight: 500;
     }
 
     .place-item__description {
-      font-size: 1.9rem;
-      font-weight: 400;
+      font-size: 1.6rem;
+      padding: 0 2rem;
     }
 
     .place-item__rating {
-      font-size: 1.9rem;
-      font-weight: 400;
+      font-size: 1.6rem;
+      font-weight: 600;
     }
   }
 
@@ -81,14 +82,26 @@ const PlaceItem = (props) => {
     setShowModal(false);
   };
 
+  // Create stars rating from 0 to 5
+  const createStars = (rating) => {
+    let stars = [];
+    for (let i = 0; i < rating; i++) {
+      stars.push('⭐');
+    }
+
+    if (stars.length === 0) return 'No rating yet';
+
+    return stars;
+  };
+
   return (
     <StyledPlaceItem className="place-item">
       {/* Modal */}
       {showModal && (
         <Modal closeModal={closeModalHandler} show={showModal}>
+          <Map location={props.location} />
           {/* <MapView /> */}
-          {/* <Map /> */}
-          <img src={img} alt="Place" />
+          {/* <img src={img} alt="Place" /> */}
         </Modal>
       )}
       {/* Image */}
@@ -102,9 +115,7 @@ const PlaceItem = (props) => {
           {props.address.country}/{props.address.city} &#127962;
         </p>
         <p className="place-item__description">{props.description} &#127915;</p>
-        <p className="place-item__rating">
-          {props.rating} {props.rating > 1 ? 'Stars' : 'Star'} ⭐
-        </p>
+        <p className="place-item__rating">{createStars(props.rating)}</p>
       </div>
       {/* Actions */}
       <div className="place-item__actions">

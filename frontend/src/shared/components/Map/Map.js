@@ -10,29 +10,33 @@ const StyledMap = styled.div`
   }
 `;
 
-const Map = () => {
+const Map = (props) => {
   const mapRef = useRef();
-  const { center, zoom } = { center: { lat: 59.95, lng: 30.33 }, zoom: 11 };
+  const { lat, lng } = props.location;
+  const zoomValue = 10;
 
+  // It will run only once when the component is mounted, and if one of the dependencies changes, it will run again
   useEffect(() => {
     const map = new window.google.maps.Map(mapRef.current, {
       center: {
-        lat: 30.0444,
-        lng: 31.2357,
+        lat,
+        lng,
       },
-      zoom: 13,
+      zoom: zoomValue,
     });
 
     new window.google.maps.Marker({
       position: {
-        lat: 30.0444,
-        lng: 31.2357,
+        lat,
+        lng,
       },
       map,
     });
-  }, [center, zoom]);
+  }, [lat, lng]);
 
   return <StyledMap ref={mapRef}>Map</StyledMap>;
 };
 
 export default Map;
+
+// API key page: https://console.cloud.google.com/apis/credentials?project=civic-axon-350205

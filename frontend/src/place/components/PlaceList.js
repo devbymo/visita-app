@@ -34,6 +34,7 @@ const PlaceList = (props) => {
           coordinates={place.location}
           creatorId={place.creator}
           rating={place.rating}
+          location={place.location}
         />
       ))}
     </StyledPlaceList>
