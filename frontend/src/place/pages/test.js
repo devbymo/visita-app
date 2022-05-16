@@ -39,7 +39,7 @@ const formReducer = (state, action) => {
   switch (action.type) {
     case 'INPUT_CHANGE':
       let isFormValid = true;
-      for (const inputId in state.requiredInputs) {
+      for (const inputId in state.inputs) {
         if (inputId === action.inputId) {
           // if the input id is the same as the one we are updating.
           // Merge it with other inputs validation vlaues.
@@ -47,13 +47,13 @@ const formReducer = (state, action) => {
         } else {
           // if the input id is not the same as the one we are updating.
           // Continue validate the other inputs values.
-          isFormValid = isFormValid && state.requiredInputs[inputId].isValid;
+          isFormValid = isFormValid && state.inputs[inputId].isValid;
         }
       }
       return {
         ...state,
-        requiredInputs: {
-          ...state.requiredInputs,
+        inputs: {
+          ...state.inputs,
           [action.inputId]: {
             value: action.value,
             isValid: action.isValid,
@@ -64,8 +64,8 @@ const formReducer = (state, action) => {
     case 'PICK_LOCATION':
       return {
         ...state,
-        optionalInputs: {
-          ...state.optionalInputs,
+        inputs: {
+          ...state.inputs,
           location: {
             lat: action.lat,
             lng: action.lng,
@@ -78,9 +78,9 @@ const formReducer = (state, action) => {
     case 'RATING_CHANGE':
       return {
         ...state,
-        optionalInputs: {
-          ...state.optionalInputs,
-          rating: action.rating,
+        inputs: {
+          ...state.inputs,
+          rating: action.ratingValue,
         },
       };
     default:
@@ -91,7 +91,7 @@ const formReducer = (state, action) => {
 const NewPlace = () => {
   // Managing the overall (form) state.
   const initialState = {
-    requiredInputs: {
+    inputs: {
       title: {
         value: '',
         isValid: false,
@@ -104,8 +104,6 @@ const NewPlace = () => {
         value: '',
         isValid: false,
       },
-    },
-    optionalInputs: {
       rating: 0,
       location: {
         lat: 0,
@@ -138,6 +136,13 @@ const NewPlace = () => {
     [dispatch]
   );
 
+  const onFormSubmitHandler = (e) => {
+    e.preventDefault();
+    console.log(formState.inputs);
+    console.log(formState.isFormValid);
+    // Here our data is valid and we can send it to the server.
+  };
+
   // Recive the location from the GetUserLocation component.
   const userLocationHandler = (lat, lng, address) => {
     console.log(`Lat: ${lat}`);
@@ -165,51 +170,9 @@ const NewPlace = () => {
     });
   };
 
-  // Reset the form.
-  const resetFormHandler = () => {
-    dispatch({
-      type: 'INPUT_CHANGE',
-      value: '',
-      isValid: false,
-    });
-    dispatch({
-      type: 'INPUT_CHANGE',
-      value: '',
-      isValid: false,
-    });
-    dispatch({
-      type: 'INPUT_CHANGE',
-      value: '',
-      isValid: false,
-    });
-    dispatch({
-      type: 'PICK_LOCATION',
-      lat: 0,
-      lng: 0,
-      shortName: '',
-      longName: '',
-      country: '',
-    });
-    dispatch({
-      type: 'RATING_CHANGE',
-      ratingValue: 0,
-    });
-  };
-
-  const onFormSubmitHandler = (e) => {
-    e.preventDefault();
-    console.log(`Required inputs: ${JSON.stringify(formState.requiredInputs)}`);
-    console.log(`Optional inputs: ${JSON.stringify(formState.optionalInputs)}`);
-    console.log(`Form is valid: ${formState.isFormValid}`);
-    // Here our data is valid and we can send it to the server.
-
-    // Reset the form.
-    resetFormHandler();
-  };
-
   return (
     <StyledNewPlace>
-      <form onSubmit={onFormSubmitHandler}>
+      <form>
         <Input
           id="title"
           element="input"
@@ -252,11 +215,13 @@ const NewPlace = () => {
           ]}
           onInput={inputHandler}
         />
-        <Rating
-          onRating={ratingHandler}
-          ratingValue={formState.optionalInputs.rating}
-        />
-        <Button disabled={!formState.isFormValid}>ADD PLACE</Button>
+        <Rating onRating={ratingHandler} />
+        <Button
+          onSubmit={onFormSubmitHandler}
+          disabled={!formState.isFormValid}
+        >
+          ADD PLACE
+        </Button>
       </form>
     </StyledNewPlace>
   );
