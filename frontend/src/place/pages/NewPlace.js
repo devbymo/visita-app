@@ -24,12 +24,12 @@ const StyledNewPlace = styled.div`
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    gap: 3rem;
+    gap: 2rem;
     color: #000;
     font-size: 2rem;
     width: 40vw;
     background-color: #ebebeb;
-    padding: 5rem;
+    padding: 3rem 5rem;
     border-radius: 1rem;
     margin-top: 7rem;
   }
@@ -209,7 +209,7 @@ const NewPlace = () => {
 
   return (
     <StyledNewPlace>
-      <form onSubmit={onFormSubmitHandler}>
+      <form>
         <Input
           id="title"
           element="input"
@@ -223,6 +223,7 @@ const NewPlace = () => {
             VALIDATOR_MINLENGTH(2),
           ]}
           onInput={inputHandler}
+          value={formState.requiredInputs.title.value}
         />
         <Input
           id="address"
@@ -237,6 +238,7 @@ const NewPlace = () => {
             VALIDATOR_MINLENGTH(2),
           ]}
           onInput={inputHandler}
+          value={formState.requiredInputs.address.value}
         />
         <GetUserLocation onPickLocation={userLocationHandler} />
         <Input
@@ -251,12 +253,15 @@ const NewPlace = () => {
             VALIDATOR_MAXLENGTH(200),
           ]}
           onInput={inputHandler}
+          value={formState.requiredInputs.description.value}
         />
         <Rating
           onRating={ratingHandler}
           ratingValue={formState.optionalInputs.rating}
         />
-        <Button disabled={!formState.isFormValid}>ADD PLACE</Button>
+        <Button onClick={onFormSubmitHandler} disabled={!formState.isFormValid}>
+          ADD PLACE
+        </Button>
       </form>
     </StyledNewPlace>
   );

@@ -123,7 +123,7 @@ const Input = (props) => {
         rows={props.rows || defaultRowsValue}
         onChange={onInputChangeHandler}
         onBlur={onInputTouchHandler}
-        value={inputState.value}
+        value={props.vlaue}
       />
     ) : (
       <input
