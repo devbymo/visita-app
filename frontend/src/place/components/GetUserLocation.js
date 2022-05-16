@@ -1,27 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '../../shared/components/Button/Button';
+import LoadingSpinner from '../../shared/components/LoaderSpiner/LoaderSpiner';
+import styled from 'styled-components';
+
+const StyledUserLocation = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: flex-start; */
+  justify-content: center;
+  margin-top: 1rem;
+
+  p {
+    margin-top: 1rem;
+    font-size: 1.7rem;
+    font-weight: 400;
+  }
+
+  .error-text {
+    color: red;
+  }
+
+  .success-text {
+    color: green;
+  }
+`;
 
 const GetUserLocation = (props) => {
-  // Get user location.
+  // State Mangement.
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
+  // Get lat, lng from user.
   const pickCurrentLocationHandler = async (e) => {
     e.preventDefault();
-    let userLocation = { latitude: '', longitude: '', address: '' };
+    // Start loading.
+    setIsLoading(true);
+
     let errorText = undefined;
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          userLocation = {
-            latitude,
-            longitude,
-          };
 
           // Get address from latitude and longitude.
           getAddressFromLatLng(latitude, longitude, errorText);
         },
         (error) => {
-          console.log(error.message);
+          setIsLoading(false);
           errorText = error.message;
+          setError(errorText);
         },
         {
           enableHighAccuracy: true,
@@ -30,17 +61,15 @@ const GetUserLocation = (props) => {
         }
       );
     } else {
-      console.log('Geolocation is not supported by this browser.');
       errorText = 'Geolocation is not supported by this browser.';
+      setIsLoading(false);
+      setError(errorText);
     }
 
-    return {
-      userLocation,
-      errorText,
-    };
+    return null;
   };
 
-  // Create a function to convert lat, lng to address.
+  // Convert latitude and longitude to address.
   const getAddressFromLatLng = async (latitude, longitude, errorText) => {
     let address = '';
     const APIKeys = 'fbadb263b1fcf914a168438770e966ab';
@@ -49,8 +78,9 @@ const GetUserLocation = (props) => {
     try {
       const response = await fetch(url);
       if (response.status !== 200 || response.ok !== true) {
-        console.log('Error: ' + response.status);
         errorText = 'Something went wrong';
+        setIsLoading(false);
+        setError(errorText);
         throw new Error('Something went wrong');
       }
 
@@ -63,22 +93,34 @@ const GetUserLocation = (props) => {
         };
       } else {
         errorText = 'Something went wrong';
-        console.log(errorText);
+        setIsLoading(false);
+        setError(errorText);
       }
     } catch (error) {
-      console.log(error);
       errorText = error.message;
+      setIsLoading(false);
+      setError(errorText);
     }
 
+    setIsLoading(false);
+    setSuccess(true);
     props.onPickLocation(latitude, longitude, address);
+    return null;
   };
 
   return (
-    <div>
-      <Button onClick={pickCurrentLocationHandler}>
-        PICK MY CURRENT LOCATION
-      </Button>
-    </div>
+    <StyledUserLocation>
+      {!isLoading && !success && (
+        <Button onClick={pickCurrentLocationHandler}>
+          PICK MY CURRENT LOCATION
+        </Button>
+      )}
+      {isLoading && <LoadingSpinner />}
+      {error && !success && <p className="error-text">{error}!</p>}
+      {success && (
+        <p className="success-text">Your address has been captured</p>
+      )}
+    </StyledUserLocation>
   );
 };
 

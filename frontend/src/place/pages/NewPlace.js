@@ -23,7 +23,7 @@ const StyledNewPlace = styled.div`
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    gap: 2rem;
+    gap: 3rem;
     color: #000;
     font-size: 2rem;
     width: 40vw;
