@@ -13,6 +13,7 @@ const StyledPlaceItem = styled.li`
   border-radius: 1rem;
   text-align: center;
   overflow: hidden;
+  background-color: #fff;
 
   &:not(:last-child) {
     margin-bottom: 5rem;
@@ -37,7 +38,7 @@ const StyledPlaceItem = styled.li`
     justify-content: space-between;
     align-items: center;
     gap: 1.5rem;
-    border-bottom: 0.2rem solid salmon;
+    border-bottom: 0.1rem solid #000;
 
     .place-item__name {
       font-style: italic;
@@ -68,7 +69,7 @@ const StyledPlaceItem = styled.li`
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: #ebebeb;
   }
 `;
 const PlaceItem = (props) => {
@@ -119,9 +120,7 @@ const PlaceItem = (props) => {
       </div>
       {/* Actions */}
       <div className="place-item__actions">
-        <Button inverse onClick={openModelHandler}>
-          VIEW ON MAP
-        </Button>
+        <Button onClick={openModelHandler}>VIEW ON MAP</Button>
         <Button to={`/places/${props.id}`}>EDIT</Button>
         <Button danger>REMOVE</Button>
       </div>
