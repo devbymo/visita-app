@@ -51,7 +51,7 @@ const StyledUserItem = styled.li`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     padding: 2rem;
 
     .user__name {
