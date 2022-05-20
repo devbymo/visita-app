@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../../shared/components/Button/Button';
-import LoadingSpinner from '../../shared/components/LoaderSpiner/LoaderSpiner';
+import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
 import styled from 'styled-components';
 
 const StyledUserLocation = styled.div`
@@ -33,6 +33,15 @@ const GetUserLocation = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  const { isFormSubmitted } = props;
+
+  // Reset state.
+  useEffect(() => {
+    setIsLoading(false);
+    setError(null);
+    setSuccess(false);
+  }, [isFormSubmitted]);
 
   // Get lat, lng from user.
   const pickCurrentLocationHandler = async (e) => {
@@ -115,7 +124,16 @@ const GetUserLocation = (props) => {
           PICK MY CURRENT LOCATION
         </Button>
       )}
-      {isLoading && <LoadingSpinner />}
+      {isLoading && (
+        <LoaderSpinner
+          isVisable={true}
+          color="#3498db"
+          backgroundColor="#f3f3f3"
+          size=".5"
+          widthAndHeight="4"
+          speedInSecond=".6"
+        />
+      )}
       {error && !success && <p className="error-text">{error}!</p>}
       {success && (
         <p className="success-text">Your address has been captured</p>
