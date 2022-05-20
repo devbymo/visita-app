@@ -99,7 +99,19 @@ const PlaceItem = (props) => {
     <StyledPlaceItem className="place-item">
       {/* Modal */}
       {showModal && (
-        <Modal closeModal={closeModalHandler} show={showModal}>
+        <Modal
+          closeModal={closeModalHandler}
+          show={showModal}
+          buttonText="Close"
+          width="45vw"
+          height="50vh"
+          button={true}
+          buttonBackgroundColor="#fff"
+          buttonBackgroundColorHover="#000"
+          buttonTextColor="#000"
+          buttonTextColorHover="#fff"
+          buttonFontSize="1.5rem"
+        >
           <Map location={props.location} />
           {/* <MapView /> */}
           {/* <img src={img} alt="Place" /> */}
