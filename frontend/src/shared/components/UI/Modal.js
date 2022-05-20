@@ -4,20 +4,22 @@ import styled from 'styled-components';
 import Button from '../Button/Button';
 
 const StyledModal = styled.div`
-  width: 50vw;
-  height: 50vh;
-  border: 3px solid blue;
+  width: ${(props) => props.width || '50vw'};
+  height: ${(props) => props.height || '20vh'};
+  background-color: ${(props) => props.modalBackgroundColor || '#ebebeb'};
+  color: ${(props) => props.modalTextColor || '#000'};
+  font-size: ${(props) => props.modalFontSize || '2rem'};
+  border-radius: ${(props) => props.modalBorderRadius || '1rem'};
+  border: ${(props) => props.modalBorder || 'none'};
+  font-size: ${(props) => props.modalFontSize || '2rem'};
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 4rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
   overflow: hidden;
-  color: black;
 
   .Content {
     width: 100%;
@@ -25,19 +27,13 @@ const StyledModal = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: ${(props) => props.modalPadding || '0'};
   }
 
   button {
     position: absolute;
     left: 2rem;
     bottom: 2rem;
-    background-color: white;
-    color: black;
-  }
-
-  button:hover {
-    background-color: black;
-    color: white;
   }
 
   img {
@@ -58,14 +54,19 @@ const StyledOverlay = styled.div`
   position: fixed;
   display: ${(props) => (props.show ? 'block' : 'none')};
 
-  background: rgba(49, 49, 49, 0.8);
+  background-color: ${(props) =>
+    props.overlayBackgroundColor || 'rgba(0, 0, 0, 0.5)'};
 
   z-index: 999;
 `;
 
 const Overlay = (props) => {
   const content = (
-    <StyledOverlay show={props.show} onClick={props.closeModal}>
+    <StyledOverlay
+      show={props.show}
+      onClick={props.closeModal}
+      overlayBackgroundColor={props.overlayBackgroundColor}
+    >
       {props.children}
     </StyledOverlay>
   );
@@ -77,19 +78,39 @@ const Overlay = (props) => {
 };
 
 const Modal = (props) => {
-  const test = () => {
-    console.log('test');
-  };
-
   const content = (
     <>
-      <Overlay show={props.show} closeModal={props.closeModal}></Overlay>
-      <StyledModal>
+      <Overlay
+        show={props.show}
+        closeModal={props.closeModal}
+        overlayBackgroundColor={props.overlayBackgroundColor}
+      ></Overlay>
+      <StyledModal
+        width={props.width}
+        height={props.height}
+        modalFontSize={props.modalFontSize}
+        modalBackgroundColor={props.modalBackgroundColor}
+        modalTextColor={props.modalTextColor}
+        modalBorderRadius={props.modalBorderRadius}
+        modalBorder={props.modalBorder}
+        modalPadding={props.modalPadding}
+      >
         <div className="Content">{props.children}</div>
         {/* <div className="Content">
           <img src="./../../../Images/fakeMapView.png" alt="Place On Map" />
         </div> */}
-        <Button onClick={props.closeModal}>Close</Button>
+        {props.button && (
+          <Button
+            onClick={props.closeModal}
+            buttonBackgroundColor={props.buttonBackgroundColor}
+            buttonBackgroundColorHover={props.buttonBackgroundColorHover}
+            buttonTextColor={props.buttonTextColor}
+            buttonTextColorHover={props.buttonTextColorHover}
+            buttonFontSize={props.buttonFontSize}
+          >
+            {props.buttonText}
+          </Button>
+        )}
       </StyledModal>
     </>
   );
