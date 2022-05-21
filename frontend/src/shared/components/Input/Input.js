@@ -66,6 +66,12 @@ const StyledInput = styled.div`
 
 const inputReducer = (state, action) => {
   switch (action.type) {
+    case 'RESET':
+      return {
+        ...state,
+        value: action.value,
+        isValid: true,
+      };
     case 'CHANGE':
       return {
         ...state,
@@ -90,6 +96,7 @@ const Input = (props) => {
     isTouched: false,
   };
   const [inputState, dispatch] = useReducer(inputReducer, initialState);
+
   const defaultRowsValue = 10;
 
   // Input change handler.
@@ -111,6 +118,7 @@ const Input = (props) => {
   // Forwards the input state values to the parent component.
   const { id, onInput } = props;
   const { value, isValid } = inputState;
+
   useEffect(() => {
     onInput(id, value, isValid);
   }, [id, value, isValid, onInput]);
@@ -123,7 +131,7 @@ const Input = (props) => {
         rows={props.rows || defaultRowsValue}
         onChange={onInputChangeHandler}
         onBlur={onInputTouchHandler}
-        value={props.vlaue}
+        value={props.value}
       />
     ) : (
       <input
@@ -132,7 +140,7 @@ const Input = (props) => {
         placeholder={props.placeholder}
         onChange={onInputChangeHandler}
         onBlur={onInputTouchHandler}
-        value={inputState.value}
+        value={props.value}
       />
     );
 
