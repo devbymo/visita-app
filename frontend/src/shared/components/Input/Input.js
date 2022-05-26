@@ -141,6 +141,7 @@ const Input = (props) => {
         onChange={onInputChangeHandler}
         onBlur={onInputTouchHandler}
         value={props.value}
+        disabled={props.disabled}
       />
     );
 

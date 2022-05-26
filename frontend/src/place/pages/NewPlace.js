@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useState } from 'react';
+import React, { useCallback, useReducer } from 'react';
 import styled from 'styled-components';
 import Input from '../../shared/components/Input/Input';
 import {
@@ -8,9 +8,9 @@ import {
 } from '../../shared/util/validators';
 import Button from '../../shared/components/Button/Button';
 import GetUserLocation from '../components/GetUserLocation';
-import Rating from '../../shared/components/Rating/Rating';
 import Modal from '../../shared/components/UI/Modal';
 import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
+import ReactStars from 'react-rating-stars-component';
 
 const StyledNewPlace = styled.div`
   display: flex;
@@ -119,7 +119,7 @@ const formReducer = (state, action) => {
         ...state,
         optionalInputs: {
           ...state.optionalInputs,
-          rating: action.rating,
+          rating: action.ratingValue,
         },
       };
     case 'RESET':
@@ -207,11 +207,10 @@ const NewPlace = () => {
   };
 
   // Recive ratingValue from Rating component.
-  const ratingHandler = (ratingValue) => {
-    console.log(ratingValue);
+  const ratingChangedHandler = (value) => {
     dispatch({
       type: 'RATING_CHANGE',
-      ratingValue: ratingValue,
+      ratingValue: value,
     });
   };
 
@@ -249,7 +248,10 @@ const NewPlace = () => {
     }, 1000);
   };
 
-  console.log(formState.requiredInputs);
+  // For testing only.
+  if (formState.isFormSubmitted) {
+    console.log(formState);
+  }
 
   return (
     <StyledNewPlace>
@@ -282,7 +284,7 @@ const NewPlace = () => {
           id="title"
           element="input"
           type="text"
-          placeholder="Ex. Mohamed Salah"
+          placeholder="Ex. Smouha"
           lable="Title *"
           errorText="Please enter a valid name"
           validators={[
@@ -292,6 +294,7 @@ const NewPlace = () => {
           ]}
           onInput={inputHandler}
           value={formState.requiredInputs.title.value}
+          disabled
         />
         <Input
           id="address"
@@ -307,6 +310,7 @@ const NewPlace = () => {
           ]}
           onInput={inputHandler}
           value={formState.requiredInputs.address.value}
+          disabled
         />
         <GetUserLocation
           onPickLocation={userLocationHandler}
@@ -326,9 +330,16 @@ const NewPlace = () => {
           onInput={inputHandler}
           value={formState.requiredInputs.description.value}
         />
-        <Rating
-          onRating={ratingHandler}
-          ratingValue={formState.optionalInputs.rating}
+        <ReactStars
+          count={5}
+          onChange={ratingChangedHandler}
+          size={35}
+          isHalf={true}
+          emptyIcon={<i className="far fa-star"></i>}
+          halfIcon={<i className="fa fa-star-half-alt"></i>}
+          fullIcon={<i className="fa fa-star"></i>}
+          activeColor="#ffd700"
+          value={formState.optionalInputs.rating}
         />
         {!formState.isLoading && (
           <Button

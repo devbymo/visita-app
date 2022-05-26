@@ -15,6 +15,7 @@ const StyledNavbar = styled.nav`
   padding: 0 4rem;
   font-size: 2.4rem;
   position: fixed;
+  z-index: 10000;
 
   .nav-logo {
     font-size: 4rem;
