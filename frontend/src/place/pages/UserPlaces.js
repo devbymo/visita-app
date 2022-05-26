@@ -26,7 +26,7 @@ const DUMMY_PLACES = [
       lat: 48.8566,
       lng: 2.3522,
     },
-    rating: 5,
+    rating: 4.5,
     creator: 'user1',
   },
   {
@@ -62,7 +62,7 @@ const DUMMY_PLACES = [
       lat: 55.6761,
       lng: 12.5683,
     },
-    rating: 3.5,
+    rating: 1.5,
     creator: 'user2',
   },
 ];
