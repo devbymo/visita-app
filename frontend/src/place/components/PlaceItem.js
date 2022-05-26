@@ -6,6 +6,7 @@ import Modal from '../../shared/components/UI/Modal';
 import Overlay from '../../shared/components/UI/Overlay';
 import Map from '../../shared/components/Map/Map';
 import img from './../../Images/fakeMapView.png';
+import ReactStars from 'react-rating-stars-component';
 
 const StyledPlaceItem = styled.li`
   width: 40vw;
@@ -57,8 +58,12 @@ const StyledPlaceItem = styled.li`
     }
 
     .place-item__rating {
-      font-size: 1.6rem;
-      font-weight: 600;
+      font-size: 3rem;
+    }
+
+    .place-item__rating--error {
+      font-size: 2.3rem;
+      font-weight: 500;
     }
   }
 
@@ -85,14 +90,12 @@ const PlaceItem = (props) => {
 
   // Create stars rating from 0 to 5
   const createStars = (rating) => {
-    let stars = [];
-    for (let i = 0; i < rating; i++) {
-      stars.push('⭐');
-    }
+    if (rating <= 0)
+      return <span className="place-item__rating--error">No Rating!</span>;
 
-    if (stars.length === 0) return 'No rating yet';
-
-    return stars;
+    return (
+      <ReactStars count={rating} value={rating} edit={false} isHalf={true} />
+    );
   };
 
   return (
