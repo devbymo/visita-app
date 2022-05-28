@@ -11,7 +11,7 @@ const StyleButton = styled.div`
     border: none;
     border-radius: 0.6rem;
     background-color: ${(props) => props.buttonBackgroundColor || '#2185d0'};
-    color: ${(props) => props.buttonTextColor || '#fff'};
+    color: ${(props) => props.buttonTextColor || '#ffffff'};
     cursor: pointer;
     margin-right: 1rem;
     text-decoration: none;
