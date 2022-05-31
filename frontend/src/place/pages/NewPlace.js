@@ -150,7 +150,7 @@ const NewPlace = () => {
   // Get the values of the input.
 
   // Updated every time the input changes - live connection.
-  const inputHandler = useCallback(
+  const inputChangedHandler = useCallback(
     (id, value, isValid) => {
       dispatch({
         type: 'INPUT_CHANGE',
@@ -292,7 +292,7 @@ const NewPlace = () => {
             VALIDATOR_MAXLENGTH(30),
             VALIDATOR_MINLENGTH(2),
           ]}
-          onInput={inputHandler}
+          onInput={inputChangedHandler}
           value={formState.requiredInputs.title.value}
           disabled
         />
@@ -308,7 +308,7 @@ const NewPlace = () => {
             VALIDATOR_MAXLENGTH(30),
             VALIDATOR_MINLENGTH(2),
           ]}
-          onInput={inputHandler}
+          onInput={inputChangedHandler}
           value={formState.requiredInputs.address.value}
           disabled
         />
@@ -325,9 +325,9 @@ const NewPlace = () => {
           validators={[
             VALIDATOR_REQUIRE(),
             VALIDATOR_MINLENGTH(5),
-            VALIDATOR_MAXLENGTH(200),
+            VALIDATOR_MAXLENGTH(500),
           ]}
-          onInput={inputHandler}
+          onInput={inputChangedHandler}
           value={formState.requiredInputs.description.value}
         />
         <ReactStars
@@ -349,7 +349,7 @@ const NewPlace = () => {
             ADD PLACE
           </Button>
         )}
-        <div>
+        <div className="loading-container">
           {formState.isLoading && (
             <LoaderSpinner
               isVisable={true}

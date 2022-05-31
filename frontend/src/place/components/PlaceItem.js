@@ -131,7 +131,7 @@ const PlaceItem = (props) => {
           {props.address.country}/{props.address.city} &#127962;
         </p>
         <p className="place-item__description">{props.description} &#127915;</p>
-        <p className="place-item__rating">{createStars(props.rating)}</p>
+        {createStars(props.rating)}
       </div>
       {/* Actions */}
       <div className="place-item__actions">

@@ -91,8 +91,8 @@ const inputReducer = (state, action) => {
 const Input = (props) => {
   // State management with useReducer.
   const initialState = {
-    value: '',
-    isValid: false,
+    value: props.value,
+    isValid: props.valid || false,
     isTouched: false,
   };
   const [inputState, dispatch] = useReducer(inputReducer, initialState);
