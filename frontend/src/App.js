@@ -32,7 +32,7 @@ function App() {
           <NewPlace />
         </Route>
         {/* Update The place */}
-        <Route path="/places/:placeId" exact>
+        <Route path="/:creatorId/places/:placeId" exact>
           <UpdatePlace />
         </Route>
         {/* Page not found error */}

@@ -17,9 +17,17 @@ const StyledModal = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  padding: ${(props) => props.modalPadding || '1rem'};
+
+  .button {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+  }
 
   .Content {
     width: 100%;
@@ -28,12 +36,6 @@ const StyledModal = styled.div`
     justify-content: center;
     align-items: center;
     padding: ${(props) => props.modalPadding || '0'};
-  }
-
-  button {
-    position: absolute;
-    left: 2rem;
-    bottom: 2rem;
   }
 
   img {
@@ -96,11 +98,9 @@ const Modal = (props) => {
         modalPadding={props.modalPadding}
       >
         <div className="Content">{props.children}</div>
-        {/* <div className="Content">
-          <img src="./../../../Images/fakeMapView.png" alt="Place On Map" />
-        </div> */}
         {props.button && (
           <Button
+            to={props.buttonTo}
             onClick={props.closeModal}
             buttonBackgroundColor={props.buttonBackgroundColor}
             buttonBackgroundColorHover={props.buttonBackgroundColorHover}

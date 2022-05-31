@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 const StyleButton = styled.div`
   .button {
+    display: inline-block;
     font-size: ${(props) => props.fontSize || '1.8rem'};
     font-weight: 500;
     padding: 1.2rem 2.5rem;
-    /* border: 1px solid rgba(0, 0, 0, 0.7); */
     border: none;
     border-radius: 0.6rem;
     background-color: ${(props) => props.buttonBackgroundColor || '#2185d0'};
@@ -15,7 +15,8 @@ const StyleButton = styled.div`
     cursor: pointer;
     margin-right: 1rem;
     text-decoration: none;
-    display: inline-block;
+    /* display: inline-block; */
+    transition: all 0.2s ease-in-out;
   }
 
   .button:focus {

@@ -245,7 +245,7 @@ const NewPlace = () => {
         type: 'LOADING',
         isLoading: false,
       });
-    }, 1000);
+    }, 700);
   };
 
   // For testing only.

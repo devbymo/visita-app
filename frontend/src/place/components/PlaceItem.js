@@ -74,7 +74,7 @@ const StyledPlaceItem = styled.li`
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: #ebebeb;
+    /* background-color: #ebebeb; */
   }
 `;
 const PlaceItem = (props) => {
@@ -136,7 +136,7 @@ const PlaceItem = (props) => {
       {/* Actions */}
       <div className="place-item__actions">
         <Button onClick={openModelHandler}>VIEW ON MAP</Button>
-        <Button to={`/places/${props.id}`}>EDIT</Button>
+        <Button to={`/${props.creatorId}/places/${props.id}`}>EDIT</Button>
         <Button danger>REMOVE</Button>
       </div>
     </StyledPlaceItem>

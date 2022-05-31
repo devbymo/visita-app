@@ -104,7 +104,7 @@ const StyledUpdatePlace = styled.div`
 
 const NewPlace = () => {
   // Get the placeId from the url.
-  const { placeId } = useParams();
+  const { placeId, creatorId } = useParams();
 
   // Get the place.
   const place = DUMMY_PLACES.find((place) => place.id === +placeId);
@@ -120,7 +120,7 @@ const NewPlace = () => {
       isValid: true,
     },
     rating: place.rating,
-    isLoading: true,
+    isLoading: false,
     isFormSubmitted: false,
   };
 
@@ -132,7 +132,7 @@ const NewPlace = () => {
           [action.input]: {
             ...state[action.input],
             value: action.value,
-            isFormUpdated: true,
+            isValid: action.isValid,
           },
         };
       case 'LOADING':
@@ -158,10 +158,11 @@ const NewPlace = () => {
   // useCallback is used to prevent the function from re-rendering every time the input changes.
   const inputChangedHandler = useCallback(
     (id, value, isValid) => {
+      // console.log(`${id} - ${value} - ${isValid}`);
       dispatch({
         type: 'INPUT_CHANGE',
-        value: value,
-        isValid: isValid,
+        value,
+        isValid,
         input: id,
       });
     },
@@ -178,6 +179,9 @@ const NewPlace = () => {
 
   const closeModalHandler = () => {
     // By resetting the form we can close the modal.
+    dispatch({
+      type: 'RESET_FORM',
+    });
   };
 
   const onFormSubmitHandler = (e) => {
@@ -204,12 +208,7 @@ const NewPlace = () => {
         type: 'LOADING',
         isLoading: false,
       });
-    }, 1000);
-
-    // Reset the form.
-    dispatch({
-      type: 'RESET_FORM',
-    });
+    }, 700);
   };
 
   // Check if the place is exist or not.
@@ -233,11 +232,12 @@ const NewPlace = () => {
           modalPadding="0 0 3rem 0"
           overlayBackgroundColor="rgba(0,0,0,0.65)"
           button={true}
-          buttonText="Ok"
+          buttonText="Back"
           buttonBackgroundColor="#00b894"
           buttonBackgroundColorHover="#00a88e"
           buttonTextColor="#fff"
           buttonTextColorHover="#fff"
+          buttonTo={`/${creatorId}/places`}
         >
           The place updated sussessfully.
         </Modal>
@@ -257,6 +257,7 @@ const NewPlace = () => {
           ]}
           onInput={inputChangedHandler}
           value={formState.title.value}
+          valid={formState.title.isValid}
         />
         <Input
           id="description"
@@ -271,6 +272,7 @@ const NewPlace = () => {
           ]}
           onInput={inputChangedHandler}
           value={formState.description.value}
+          valid={formState.description.isValid}
         />
         <ReactStars
           count={5}
@@ -283,7 +285,7 @@ const NewPlace = () => {
           activeColor="#ffd700"
           value={formState.rating}
         />
-        {formState.isLoading ? (
+        {formState.isLoading && (
           <LoaderSpinner
             isVisable={true}
             color="#3498db"
@@ -292,8 +294,14 @@ const NewPlace = () => {
             widthAndHeight="4"
             speedInSecond=".6"
           />
-        ) : (
-          <Button onClick={onFormSubmitHandler} disabled>
+        )}
+        {!formState.isLoading && (
+          <Button
+            onClick={onFormSubmitHandler}
+            disabled={
+              !formState.title.isValid || !formState.description.isValid
+            }
+          >
             UPDATE PLACE
           </Button>
         )}
