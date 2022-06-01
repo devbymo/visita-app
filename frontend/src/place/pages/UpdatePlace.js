@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Input from '../../shared/components/Input/Input';
@@ -11,7 +11,7 @@ import Button from '../../shared/components/Button/Button';
 import Modal from '../../shared/components/UI/Modal';
 import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
 import ReactStars from 'react-rating-stars-component';
-import NotFound from '../../shared/components/NotFound/NotFound';
+import PlaceNotFound from '../components/PlaceNotFound';
 
 const DUMMY_PLACES = [
   {
@@ -110,19 +110,23 @@ const NewPlace = () => {
   const place = DUMMY_PLACES.find((place) => place.id === +placeId);
 
   // Managing the overall (form) state.
-  const initialState = {
-    title: {
-      value: place.placeName,
-      isValid: true,
-    },
-    description: {
-      value: place.description,
-      isValid: true,
-    },
-    rating: place.rating,
-    isLoading: false,
-    isFormSubmitted: false,
-  };
+  let initialState = {};
+
+  if (place) {
+    initialState = {
+      title: {
+        value: place.placeName,
+        isValid: true,
+      },
+      description: {
+        value: place.description,
+        isValid: true,
+      },
+      rating: place.rating,
+      isLoading: false,
+      isFormSubmitted: false,
+    };
+  }
 
   const formReducer = (state, action) => {
     switch (action.type) {
@@ -213,7 +217,13 @@ const NewPlace = () => {
 
   // Check if the place is exist or not.
   if (!place) {
-    return <NotFound />;
+    return (
+      <PlaceNotFound
+        errorMessage="There is no place to update!"
+        buttonText="ADD NEW PLACE"
+        to="/places/new"
+      />
+    );
   }
 
   return (

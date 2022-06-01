@@ -2,23 +2,22 @@ import React from 'react';
 import PlaceItem from './PlaceItem';
 
 import styled from 'styled-components';
+import Button from '../../shared/components/Button/Button';
+import PlaceNotFound from './PlaceNotFound';
 
 const StyledPlaceList = styled.div`
   list-style-type: none;
 `;
 
-const StyledNoPlacesFounded = styled.div`
-  height: 70vh;
-  font-size: 4rem;
-  font-weight: 600;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const PlaceList = (props) => {
   if (props.places.length === 0) {
-    return <StyledNoPlacesFounded>No places founded! 🤷‍♂️</StyledNoPlacesFounded>;
+    return (
+      <PlaceNotFound
+        errorMessage="There is no places to show!"
+        buttonText="ADD NEW PLACE"
+        to="/places/new"
+      />
+    );
   }
 
   return (
