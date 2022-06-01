@@ -101,7 +101,7 @@ const Modal = (props) => {
         {props.button && (
           <Button
             to={props.buttonTo}
-            onClick={props.closeModal}
+            onClick={props.buttonOnClick || props.closeModal}
             buttonBackgroundColor={props.buttonBackgroundColor}
             buttonBackgroundColorHover={props.buttonBackgroundColorHover}
             buttonTextColor={props.buttonTextColor}

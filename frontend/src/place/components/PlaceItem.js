@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../shared/components/Button/Button';
-import MapView from '../../shared/components/Map/MapView';
 import Modal from '../../shared/components/UI/Modal';
-import Overlay from '../../shared/components/UI/Overlay';
 import Map from '../../shared/components/Map/Map';
-import img from './../../Images/fakeMapView.png';
 import ReactStars from 'react-rating-stars-component';
 
 const StyledPlaceItem = styled.li`
@@ -78,14 +75,28 @@ const StyledPlaceItem = styled.li`
   }
 `;
 const PlaceItem = (props) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const openModelHandler = () => {
-    setShowModal(true);
+  // Map modal handlers.
+  const [showMapModal, setShowMapModal] = useState(false);
+  const openMapModelHandler = () => {
+    setShowMapModal(true);
+  };
+  const closeMapModalHandler = () => {
+    setShowMapModal(false);
   };
 
-  const closeModalHandler = () => {
-    setShowModal(false);
+  // Remove modal handlers.
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const openRemoveModalHandler = () => {
+    setShowRemoveModal(true);
+  };
+  const closeRemoveModalHandler = () => {
+    setShowRemoveModal(false);
+  };
+
+  const removePlaceHandler = () => {
+    // You delete the place from the server....
+    closeRemoveModalHandler();
+    console.log('The place was removed.');
   };
 
   // Create stars rating from 0 to 5
@@ -101,14 +112,16 @@ const PlaceItem = (props) => {
   return (
     <StyledPlaceItem className="place-item">
       {/* Modal */}
-      {showModal && (
+      {showMapModal && (
         <Modal
-          closeModal={closeModalHandler}
-          show={showModal}
+          closeModal={closeMapModalHandler}
+          show={showMapModal}
           buttonText="Close"
           width="45vw"
           height="50vh"
           button={true}
+          modalPadding="0"
+          modalBorder="2px solid #fafafa"
           buttonBackgroundColor="#fff"
           buttonBackgroundColorHover="#000"
           buttonTextColor="#000"
@@ -116,8 +129,30 @@ const PlaceItem = (props) => {
           buttonFontSize="1.5rem"
         >
           <Map location={props.location} />
-          {/* <MapView /> */}
-          {/* <img src={img} alt="Place" /> */}
+        </Modal>
+      )}
+      {showRemoveModal && (
+        <Modal
+          show={showRemoveModal}
+          closeModal={closeRemoveModalHandler}
+          width="30vw"
+          height="20vh"
+          modalBackgroundColor="#fff"
+          modalTextColor="#000"
+          modalFontSize="2.2rem"
+          modalBorderRadius="10px"
+          modalBorder="1px solid #fff"
+          modalPadding="0 0 3rem 0"
+          overlayBackgroundColor="rgba(0,0,0,0.65)"
+          button={true}
+          buttonText="confirm"
+          buttonBackgroundColor="#830000"
+          buttonBackgroundColorHover="salmon"
+          buttonTextColor="#fff"
+          buttonTextColorHover="#fff"
+          buttonOnClick={removePlaceHandler}
+        >
+          Are you sure you want to remove this place?
         </Modal>
       )}
       {/* Image */}
@@ -135,9 +170,11 @@ const PlaceItem = (props) => {
       </div>
       {/* Actions */}
       <div className="place-item__actions">
-        <Button onClick={openModelHandler}>VIEW ON MAP</Button>
+        <Button onClick={openMapModelHandler}>VIEW ON MAP</Button>
         <Button to={`/${props.creatorId}/places/${props.id}`}>EDIT</Button>
-        <Button danger>REMOVE</Button>
+        <Button danger onClick={openRemoveModalHandler}>
+          REMOVE
+        </Button>
       </div>
     </StyledPlaceItem>
   );
