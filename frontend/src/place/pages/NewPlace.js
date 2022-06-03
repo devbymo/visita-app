@@ -286,7 +286,7 @@ const NewPlace = () => {
           type="text"
           placeholder="Ex. Smouha"
           lable="Title *"
-          errorText="Please enter a valid name"
+          errorText="Please enter a valid title"
           validators={[
             VALIDATOR_REQUIRE(),
             VALIDATOR_MAXLENGTH(30),
@@ -294,7 +294,6 @@ const NewPlace = () => {
           ]}
           onInput={inputChangedHandler}
           value={formState.requiredInputs.title.value}
-          disabled
         />
         <Input
           id="address"
@@ -310,7 +309,6 @@ const NewPlace = () => {
           ]}
           onInput={inputChangedHandler}
           value={formState.requiredInputs.address.value}
-          disabled
         />
         <GetUserLocation
           onPickLocation={userLocationHandler}
