@@ -43,8 +43,8 @@ const StyleButton = styled.div`
   }
 
   .button--danger {
-    background: #830000;
-    border-color: #830000;
+    background: #db2c2c;
+    border-color: #db2c2c;
   }
 
   .button--danger:hover,
