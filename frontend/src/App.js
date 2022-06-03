@@ -2,11 +2,11 @@ import './App.css';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Users from './user/pages/Users';
 import Navbar from './shared/components/Navigation/Navbar';
-import TestComponent from './user/components/TestComponent';
 import NotFound from './shared/components/NotFound/NotFound';
 import UserPlaces from './place/pages/UserPlaces';
 import NewPlace from './place/pages/NewPlace';
 import UpdatePlace from './place/pages/UpdatePlace';
+import Auth from './user/pages/Auth';
 
 function App() {
   return (
@@ -34,6 +34,10 @@ function App() {
         {/* Update The place */}
         <Route path="/:creatorId/places/:placeId" exact>
           <UpdatePlace />
+        </Route>
+        {/* Auth page */}
+        <Route path="/auth" exact>
+          <Auth />
         </Route>
         {/* Page not found error */}
         <Route path="*">
