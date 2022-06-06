@@ -128,7 +128,7 @@ const PlaceItem = (props) => {
           buttonTextColorHover="#fff"
           buttonFontSize="1.5rem"
         >
-          <Map location={props.location} />
+          {<Map location={props.location} /> || 'Unable to display the map!'}
         </Modal>
       )}
       {showRemoveModal && (
