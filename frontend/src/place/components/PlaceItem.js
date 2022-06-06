@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import Button from '../../shared/components/Button/Button';
 import Modal from '../../shared/components/UI/Modal';
 import Map from '../../shared/components/Map/Map';
 import ReactStars from 'react-rating-stars-component';
+import { AuthContext } from '../../shared/context/auth-context';
 
 const StyledPlaceItem = styled.li`
   width: 40vw;
@@ -99,6 +100,9 @@ const PlaceItem = (props) => {
     console.log('The place was removed.');
   };
 
+  // Auth context.
+  const { isAuthenticated } = useContext(AuthContext);
+
   // Create stars rating from 0 to 5
   const createStars = (rating) => {
     if (rating <= 0)
@@ -171,10 +175,14 @@ const PlaceItem = (props) => {
       {/* Actions */}
       <div className="place-item__actions">
         <Button onClick={openMapModelHandler}>VIEW ON MAP</Button>
-        <Button to={`/${props.creatorId}/places/${props.id}`}>EDIT</Button>
-        <Button danger onClick={openRemoveModalHandler}>
-          REMOVE
-        </Button>
+        {isAuthenticated && (
+          <Button to={`/${props.creatorId}/places/${props.id}`}>EDIT</Button>
+        )}
+        {isAuthenticated && (
+          <Button danger onClick={openRemoveModalHandler}>
+            REMOVE
+          </Button>
+        )}
       </div>
     </StyledPlaceItem>
   );
