@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback, useReducer, useContext } from 'react';
 
 import styled from 'styled-components';
 import Button from '../../shared/components/Button/Button';
@@ -9,6 +9,7 @@ import {
   VALIDATOR_REQUIRE,
 } from '../../shared/util/validators';
 import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
+import { AuthContext } from '../../shared/context/auth-context';
 
 const StyledAuth = styled.div`
   display: flex;
@@ -110,6 +111,9 @@ const Auth = () => {
 
   const [formState, dispatch] = useReducer(formReducer, initialState);
 
+  // Authantication context.
+  const { isAuthenticated, login, logout } = useContext(AuthContext);
+
   const inputChangeHandler = useCallback(
     (id, value, isValid) => {
       dispatch({
@@ -153,6 +157,9 @@ const Auth = () => {
         console.log(`Address: ${formState.address.value}`);
       }
 
+      // Update context.
+      login();
+
       // Update the form submmited state.
       dispatch({ type: 'SET_FORM_SUBMITTED', isFormSubmitted: true });
 
@@ -190,77 +197,83 @@ const Auth = () => {
 
   return (
     <StyledAuth>
-      <h1>{formState.isLoginMode ? 'Login' : 'Signup'}</h1>
-      <form className="form-container">
-        {!formState.isLoginMode && (
-          <Input
-            id="name"
-            element="input"
-            type="text"
-            placeholder="Ex. Mohamed Yasser"
-            lable="Name *"
-            errorText="Please enter a valid name"
-            validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
-            onInput={inputChangeHandler}
-          />
-        )}
-        {!formState.isLoginMode && (
-          <Input
-            id="address"
-            element="input"
-            type="text"
-            placeholder="Ex. Egypt - Alexandria"
-            lable="Adress *"
-            errorText="Please enter a valid address"
-            validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(10)]}
-            onInput={inputChangeHandler}
-          />
-        )}
-        <Input
-          id="email"
-          element="input"
-          type="email"
-          placeholder="Ex. name@gmail.com"
-          lable="E-mail *"
-          errorText="Please enter a valid email"
-          validators={[VALIDATOR_REQUIRE(), VALIDATOR_EMAIL()]}
-          onInput={inputChangeHandler}
-        />
-        <Input
-          id="password"
-          element="input"
-          type="password"
-          placeholder="**********"
-          lable="Password *"
-          errorText="Please enter a password of at least 5 characters"
-          validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
-          onInput={inputChangeHandler}
-        />
-        {formState.isLoading ? (
-          <LoaderSpinner
-            isVisable={true}
-            color="#3498db"
-            backgroundColor="#f3f3f3"
-            size=".5"
-            widthAndHeight="4"
-            speedInSecond=".6"
-          />
-        ) : (
-          <Button
-            onClick={formSubmitHandler}
-            disabled={
-              formState.isLoginMode
-                ? loginValidityHandler()
-                : signupValidityHandler()
-            }
-          >
-            {formState.isLoginMode ? 'LOGIN' : 'SIGNUP'}
-          </Button>
-        )}
-        <Button danger onClick={authModeHandler}>
-          SWITCH TO {formState.isLoginMode ? 'SIGNUP' : 'LOGIN'}
-        </Button>
-      </form>
+      {isAuthenticated ? (
+        <Button onClick={logout}>Logout</Button>
+      ) : (
+        <>
+          <h1>{formState.isLoginMode ? 'Login' : 'Signup'}</h1>
+          <form className="form-container">
+            {!formState.isLoginMode && (
+              <Input
+                id="name"
+                element="input"
+                type="text"
+                placeholder="Ex. Mohamed Yasser"
+                lable="Name *"
+                errorText="Please enter a valid name"
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
+                onInput={inputChangeHandler}
+              />
+            )}
+            {!formState.isLoginMode && (
+              <Input
+                id="address"
+                element="input"
+                type="text"
+                placeholder="Ex. Egypt - Alexandria"
+                lable="Adress *"
+                errorText="Please enter a valid address"
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(10)]}
+                onInput={inputChangeHandler}
+              />
+            )}
+            <Input
+              id="email"
+              element="input"
+              type="email"
+              placeholder="Ex. name@gmail.com"
+              lable="E-mail *"
+              errorText="Please enter a valid email"
+              validators={[VALIDATOR_REQUIRE(), VALIDATOR_EMAIL()]}
+              onInput={inputChangeHandler}
+            />
+            <Input
+              id="password"
+              element="input"
+              type="password"
+              placeholder="**********"
+              lable="Password *"
+              errorText="Please enter a password of at least 5 characters"
+              validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
+              onInput={inputChangeHandler}
+            />
+            {formState.isLoading ? (
+              <LoaderSpinner
+                isVisable={true}
+                color="#3498db"
+                backgroundColor="#f3f3f3"
+                size=".5"
+                widthAndHeight="4"
+                speedInSecond=".6"
+              />
+            ) : (
+              <Button
+                onClick={formSubmitHandler}
+                disabled={
+                  formState.isLoginMode
+                    ? loginValidityHandler()
+                    : signupValidityHandler()
+                }
+              >
+                {formState.isLoginMode ? 'LOGIN' : 'SIGNUP'}
+              </Button>
+            )}
+            <Button danger onClick={authModeHandler}>
+              SWITCH TO {formState.isLoginMode ? 'SIGNUP' : 'LOGIN'}
+            </Button>
+          </form>
+        </>
+      )}
     </StyledAuth>
   );
 };
