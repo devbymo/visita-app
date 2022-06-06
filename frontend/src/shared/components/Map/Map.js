@@ -34,7 +34,12 @@ const Map = (props) => {
     });
   }, [lat, lng]);
 
-  return <StyledMap ref={mapRef}>Map</StyledMap>;
+  // Check the existing of map.
+  return !window.google ? (
+    <div>Something went wrong, unable to display the map!</div>
+  ) : (
+    <StyledMap ref={mapRef}>Map</StyledMap>
+  );
 };
 
 export default Map;
