@@ -83,10 +83,6 @@ const StyledNavbar = styled.nav`
       padding-bottom: 2rem;
     }
 
-    /* .nav-links.active .nav-item:last-child {
-      padding-bottom: 2rem;
-    } */
-
     .nav-links.active .nav-item:not(:last-child) {
       border-bottom: 1px solid #777;
     }
@@ -121,12 +117,7 @@ const Navbar = () => {
       </div>
       <ul className={open ? 'nav-links active' : 'nav-links'}>
         <li className="nav-item">
-          <NavLink
-            to="/"
-            className="nav-link"
-            // activeClassName={'nav-link-active'}
-            onClick={closeMenu}
-          >
+          <NavLink to="/" className="nav-link" onClick={closeMenu}>
             All Users
           </NavLink>
         </li>
