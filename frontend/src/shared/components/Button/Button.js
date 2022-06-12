@@ -15,7 +15,6 @@ const StyleButton = styled.div`
     cursor: pointer;
     margin-right: 1rem;
     text-decoration: none;
-    /* display: inline-block; */
     transition: all 0.2s ease-in-out;
   }
 
@@ -28,7 +27,6 @@ const StyleButton = styled.div`
     background-color: ${(props) =>
       props.buttonBackgroundColorHover || '#1e73be'};
     color: ${(props) => props.buttonTextColorHover || '#fff'};
-    /* background: #409ee6; */
   }
 
   .button--inverse {
