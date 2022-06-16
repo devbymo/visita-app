@@ -9,8 +9,8 @@ const Button = (props) => {
         buttonBackgroundColor={props.buttonBackgroundColor}
         buttonBackgroundColorHover={props.buttonBackgroundColorHover}
         buttonTextColor={props.buttonTextColor}
-        buttonTextColorHover={props.buttonTextColorHover}
         buttonFontSize={props.buttonFontSize}
+        buttonTextColorHover={props.buttonTextColorHover}
       >
         <a
           className={`button button--${props.size || 'default'} ${
