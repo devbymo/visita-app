@@ -51,7 +51,7 @@ const StyledInput = styled.div`
 
   .error-text {
     color: #ff0000;
-    font-size: 1.7rem;
+    font-size: 1.65rem;
     align-self: flex-start;
   }
 `;
