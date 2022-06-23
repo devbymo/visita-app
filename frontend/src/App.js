@@ -96,31 +96,8 @@ function App() {
       <div className="app">
         <header>
           <Navbar />
-        </header>
+    </header>
         <main>{routes}</main>
-        {/* <Switch>
-          <Route path="/" exact>
-            <Users />
-          </Route>
-          <Route path="/users" exact>
-            <Redirect to="/" />
-          </Route>
-          <Route path="/:userId/places" exact>
-            <UserPlaces />
-          </Route>
-          <Route path="/places/new" exact>
-            <NewPlace />
-          </Route>
-          <Route path="/:creatorId/places/:placeId" exact>
-            <UpdatePlace />
-          </Route>
-          <Route path="/auth" exact>
-            <Auth />
-          </Route>
-          <Route path="*">
-            <NotFound />
-          </Route>
-        </Switch> */}
       </div>
     </AuthContext.Provider>
   );
