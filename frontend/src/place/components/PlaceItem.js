@@ -78,7 +78,10 @@ const StyledPlaceItem = styled.li`
 const PlaceItem = (props) => {
   // Map modal handlers.
   const [showMapModal, setShowMapModal] = useState(false);
-  const openMapModelHandler = () => {
+  const openMapModelHandler = (e) => {
+    // Prevent default behavior of the link.
+    e.preventDefault();
+
     setShowMapModal(true);
   };
   const closeMapModalHandler = () => {
