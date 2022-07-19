@@ -1,3 +1,5 @@
+const HttpError = require('../utils/http-error');
+
 const DUMMY_PLACES = [
   {
     id: 1,
@@ -59,16 +61,25 @@ const getPlaceById = async (req, res, next) => {
   const { placeId } = req.params;
   const place = DUMMY_PLACES.find((place) => place.id === parseInt(placeId));
 
-  console.log(place);
-
   if (!place) {
-    const error = new Error('Place not found!');
-    error.status = 404;
-    // throw error;
-    return next(error);
+    return next(new HttpError('Place not found!', 404));
   }
 
   res.status(200).json({ place });
 };
 
-module.exports = getPlaceById;
+const getPlaceByUserId = async (req, res, next) => {
+  const { userId } = req.params;
+  const places = DUMMY_PLACES.filter((place) => place.creator === userId);
+
+  if (places.length === 0) {
+    return next(new HttpError('Places not found!', 404));
+  }
+
+  res.status(200).json({ places });
+};
+
+module.exports = {
+  getPlaceById,
+  getPlaceByUserId,
+};
