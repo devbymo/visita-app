@@ -1,8 +1,11 @@
+const uui = require('uuid');
+
 const HttpError = require('../utils/http-error');
+const isInputDataValid = require('../utils/isInputsValid');
 
 const DUMMY_PLACES = [
   {
-    id: 1,
+    id: '1',
     imageURL:
       'https://media.istockphoto.com/photos/paris-aerial-panorama-with-river-seine-and-eiffel-tower-france-picture-id1336449613?b=1&k=20&m=1336449613&s=170667a&w=0&h=atFJsGNEMuHaPll6bRwOkZl8Q0Iz83EcUUi0SvhAeM8=',
     placeName: 'Paris',
@@ -20,7 +23,7 @@ const DUMMY_PLACES = [
     creator: 'user1',
   },
   {
-    id: 2,
+    id: '2',
     imageURL:
       'https://media.istockphoto.com/photos/shore-of-alexandria-egypt-picture-id157316325?b=1&k=20&m=157316325&s=170667a&w=0&h=qIojlEvA4WbM-LTXhInTzN-kEKGqb7S1uWmqtLC2wwY=',
     placeName: 'Alexandria',
@@ -38,7 +41,7 @@ const DUMMY_PLACES = [
     creator: 'user1',
   },
   {
-    id: 3,
+    id: '3',
     imageURL:
       'https://media.istockphoto.com/photos/nyhavn-copenhagen-denmark-picture-id901375804?b=1&k=20&m=901375804&s=170667a&w=0&h=SjhoV9MfiKSfJ4JVT7y62sfjlpq-OUqfjEhJwMlZQTY=',
     placeName: 'Copenhagen',
@@ -58,8 +61,9 @@ const DUMMY_PLACES = [
 ];
 
 const getPlaceById = async (req, res, next) => {
+  console.log(`Place ID: ${req.params.placeId}`);
   const { placeId } = req.params;
-  const place = DUMMY_PLACES.find((place) => place.id === parseInt(placeId));
+  const place = DUMMY_PLACES.find((place) => place.id === placeId);
 
   if (!place) {
     return next(new HttpError('Place not found!', 404));
@@ -79,7 +83,65 @@ const getPlaceByUserId = async (req, res, next) => {
   res.status(200).json({ places });
 };
 
+const createPlace = async (req, res, next) => {
+  const { address, description, title, location, rating, image, creator } =
+    req.body;
+
+  // Check if there is invalid fields passed.
+  const passedFields = Object.keys(req.body);
+  const allowedFields = [
+    'address',
+    'description',
+    'title',
+    'location',
+    'rating',
+    'image',
+    'creator',
+  ];
+  const isValid = isInputDataValid(passedFields, allowedFields);
+  if (!isValid) {
+    return next(
+      new HttpError(
+        `Not allowed fields passed, allowed fields: [${allowedFields}]!`,
+        400
+      )
+    );
+  }
+
+  // Check the required inputs.
+  if (!address || !description || !title || !creator) {
+    return next(
+      new HttpError(
+        `Missing required inputs [address, description, title, creator]!`,
+        400
+      )
+    );
+  }
+
+  const newPlace = {
+    id: uui.v4(),
+    title,
+    address,
+    description,
+    coordinates: location || { lat: 0, lng: 0 },
+    rating: rating || 0,
+    image,
+    creator,
+  };
+
+  DUMMY_PLACES.push(newPlace);
+
+  // Now newPlace is ready to be added to db.
+  // ....
+
+  res.json({
+    newPlace,
+    allPlaces: DUMMY_PLACES,
+  });
+};
+
 module.exports = {
   getPlaceById,
   getPlaceByUserId,
+  createPlace,
 };
