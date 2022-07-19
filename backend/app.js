@@ -6,7 +6,7 @@ const usersRoutes = require('./routes/users-routes');
 
 const app = express();
 
-// Parse all incoming request to json.
+// Use body parser to parse the body of the requests.
 app.use(bodyParser.json());
 
 // Places routes.
@@ -22,9 +22,9 @@ app.use((error, req, res, next) => {
     return next(error);
   }
 
-  const { status, message } = error;
+  const { statusCode, message } = error;
 
-  res.status(status || 500);
+  res.status(statusCode || 500);
   res.json({
     error: {
       message: message || 'Something went wrong!',
