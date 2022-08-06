@@ -141,8 +141,66 @@ const createPlace = async (req, res, next) => {
   });
 };
 
+const updatePlace = async (req, res, next) => {
+  const { placeId } = req.params;
+  const { description, title } = req.body;
+
+  // Check if there is invalid fields passed.
+  const passedUpdates = Object.keys(req.body);
+  const allowedUpdates = ['description', 'title'];
+  const isValid = isInputDataValid(passedUpdates, allowedUpdates);
+  if (!isValid) {
+    return next(
+      new HttpError(
+        `Not allowed updates passed, allowed updates: [${allowedUpdates}]!`,
+        400
+      )
+    );
+  }
+
+  // Update the place.
+  const place = DUMMY_PLACES.find((place) => place.id === placeId);
+
+  // Check if place exists.
+  if (!place) {
+    return next(new HttpError('Place not found!', 404));
+  }
+
+  // Check if there is any updates.
+  if (description) {
+    place.description = description;
+  }
+  if (title) {
+    place.placeName = title;
+  }
+
+  // Add the updated place to the dummy places.
+  DUMMY_PLACES[DUMMY_PLACES.indexOf(place)] = place;
+
+  res.status(200).json({ updatedPlace: place, allPlaces: DUMMY_PLACES });
+};
+
+const deletePlace = async (req, res, next) => {
+  const { placeId } = req.params;
+
+  // Find the place.
+  const place = DUMMY_PLACES.find((place) => place.id === placeId);
+
+  // Check if place exists.
+  if (!place) {
+    return next(new HttpError('Place not found!', 404));
+  }
+
+  // Remove the place from the dummy places.
+  DUMMY_PLACES.splice(DUMMY_PLACES.indexOf(place), 1);
+
+  res.status(200).json({ allPlaces: DUMMY_PLACES });
+};
+
 module.exports = {
   getPlaceById,
   getPlacesByUserId,
   createPlace,
+  updatePlace,
+  deletePlace,
 };
