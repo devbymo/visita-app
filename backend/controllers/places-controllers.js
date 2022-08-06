@@ -1,6 +1,6 @@
 const uui = require('uuid');
 
-const HttpError = require('../utils/http-error');
+const HttpError = require('../models/http-error');
 const isInputDataValid = require('../utils/isInputsValid');
 
 const DUMMY_PLACES = [
