@@ -2,15 +2,15 @@ const express = require('express');
 
 const {
   getPlaceById,
-  getPlaceByUserId,
+  getPlacesByUserId,
   createPlace,
 } = require('../controllers/places-controllers');
 
 // Init places routes.
 const router = express.Router();
 
-// Get place by userId.
-router.get('/user/:userId', getPlaceByUserId);
+// Get places by userId.
+router.get('/user/:userId', getPlacesByUserId);
 
 // Get place by id.
 router.get('/:placeId', getPlaceById);

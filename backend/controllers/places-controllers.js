@@ -61,10 +61,10 @@ const DUMMY_PLACES = [
 ];
 
 const getPlaceById = async (req, res, next) => {
-  console.log(`Place ID: ${req.params.placeId}`);
   const { placeId } = req.params;
   const place = DUMMY_PLACES.find((place) => place.id === placeId);
 
+  // Check if place exists.
   if (!place) {
     return next(new HttpError('Place not found!', 404));
   }
@@ -72,10 +72,11 @@ const getPlaceById = async (req, res, next) => {
   res.status(200).json({ place });
 };
 
-const getPlaceByUserId = async (req, res, next) => {
+const getPlacesByUserId = async (req, res, next) => {
   const { userId } = req.params;
   const places = DUMMY_PLACES.filter((place) => place.creator === userId);
 
+  // Check if there is 1 place at least.
   if (places.length === 0) {
     return next(new HttpError('Places not found!', 404));
   }
@@ -102,7 +103,7 @@ const createPlace = async (req, res, next) => {
   if (!isValid) {
     return next(
       new HttpError(
-        `Not allowed fields passed, allowed fields: [${allowedFields}]!`,
+        `Not allowed field passed, allowed fields: [${allowedFields}]!`,
         400
       )
     );
@@ -129,7 +130,7 @@ const createPlace = async (req, res, next) => {
     creator,
   };
 
-  DUMMY_PLACES.push(newPlace);
+  DUMMY_PLACES.unshift(newPlace);
 
   // Now newPlace is ready to be added to db.
   // ....
@@ -142,6 +143,6 @@ const createPlace = async (req, res, next) => {
 
 module.exports = {
   getPlaceById,
-  getPlaceByUserId,
+  getPlacesByUserId,
   createPlace,
 };
