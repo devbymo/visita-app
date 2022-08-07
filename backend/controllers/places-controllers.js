@@ -3,7 +3,7 @@ const uui = require('uuid');
 const HttpError = require('../models/http-error');
 const isInputDataValid = require('../utils/isInputsValid');
 
-const DUMMY_PLACES = [
+let DUMMY_PLACES = [
   {
     id: '1',
     imageURL:
@@ -77,7 +77,7 @@ const getPlacesByUserId = async (req, res, next) => {
   const places = DUMMY_PLACES.filter((place) => place.creator === userId);
 
   // Check if there is 1 place at least.
-  if (places.length === 0) {
+  if (places.length < 1 || !places) {
     return next(new HttpError('Places not found!', 404));
   }
 
@@ -159,42 +159,56 @@ const updatePlace = async (req, res, next) => {
   }
 
   // Update the place.
-  const place = DUMMY_PLACES.find((place) => place.id === placeId);
+  const updatedPlace = DUMMY_PLACES.find((place) => place.id === placeId);
+  const updatedPlaceIndex = DUMMY_PLACES.findIndex(
+    (place) => place.id === placeId
+  );
 
   // Check if place exists.
-  if (!place) {
+  if (!updatedPlace) {
     return next(new HttpError('Place not found!', 404));
   }
 
   // Check if there is any updates.
   if (description) {
-    place.description = description;
+    updatedPlace.description = description;
   }
   if (title) {
-    place.placeName = title;
+    updatedPlace.placeName = title;
   }
 
   // Add the updated place to the dummy places.
-  DUMMY_PLACES[DUMMY_PLACES.indexOf(place)] = place;
+  DUMMY_PLACES[updatedPlaceIndex] = updatedPlace;
 
-  res.status(200).json({ updatedPlace: place, allPlaces: DUMMY_PLACES });
+  res.status(200).json({
+    message: 'Place updated successfully.',
+    updatedPlace,
+    allPlaces: DUMMY_PLACES,
+  });
 };
 
 const deletePlace = async (req, res, next) => {
   const { placeId } = req.params;
 
   // Find the place.
-  const place = DUMMY_PLACES.find((place) => place.id === placeId);
+  const removedPlace = DUMMY_PLACES.find((place) => place.id === placeId);
+  const removedPlaceIndex = DUMMY_PLACES.findIndex(
+    (place) => place.id === placeId
+  );
 
   // Check if place exists.
-  if (!place) {
+  if (!removedPlace) {
     return next(new HttpError('Place not found!', 404));
   }
 
   // Remove the place from the dummy places.
-  DUMMY_PLACES.splice(DUMMY_PLACES.indexOf(place), 1);
+  DUMMY_PLACES.splice(removedPlaceIndex, 1);
+  // OR
+  // DUMMY_PLACES = DUMMY_PLACES.filter((place) => removedPlace.id !== place);
 
-  res.status(200).json({ allPlaces: DUMMY_PLACES });
+  res
+    .status(200)
+    .json({ message: 'Place deleted successfuly.', allPlaces: DUMMY_PLACES });
 };
 
 module.exports = {
