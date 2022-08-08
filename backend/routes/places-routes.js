@@ -2,29 +2,34 @@ const express = require('express');
 
 const {
   getPlaceById,
+  validateGetPlaceByIdInputs,
   getPlacesByUserId,
+  validateGetPlacebyUserIdInputs,
   createPlace,
+  validateCreatePlaceInputs,
   updatePlace,
+  validateUpdatePlaceInputs,
   deletePlace,
+  validateDeletePlaceInputs,
 } = require('../controllers/places-controllers');
 
 // Init places routes.
 const router = express.Router();
 
-// Get places by userId.
-router.get('/user/:userId', getPlacesByUserId);
-
 // Get place by id.
-router.get('/:placeId', getPlaceById);
+router.get('/:placeId', validateGetPlaceByIdInputs, getPlaceById);
+
+// Get places by userId.
+router.get('/user/:userId', validateGetPlacebyUserIdInputs, getPlacesByUserId);
 
 // Create place.
-router.post('/create', createPlace);
+router.post('/create', validateCreatePlaceInputs, createPlace);
 
 // Update place.
-router.patch('/:placeId', updatePlace);
+router.patch('/:placeId', validateUpdatePlaceInputs, updatePlace);
 
 // Delete place.
-router.delete('/:placeId', deletePlace);
+router.delete('/:placeId', validateDeletePlaceInputs, deletePlace);
 
 // Export places routes.
 module.exports = router;

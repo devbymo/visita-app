@@ -60,7 +60,7 @@ let DUMMY_PLACES = [
   },
 ];
 
-const getPlaceById = async (req, res, next) => {
+const validateGetPlaceByIdInputs = async (req, res, next) => {
   const { placeId } = req.params;
   const place = DUMMY_PLACES.find((place) => place.id === placeId);
 
@@ -69,10 +69,16 @@ const getPlaceById = async (req, res, next) => {
     return next(new HttpError('Place not found!', 404));
   }
 
-  res.status(200).json({ place });
+  // Forward the place.
+  req.place = place;
+  next();
 };
 
-const getPlacesByUserId = async (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
+  res.status(200).json({ place: req.place });
+};
+
+const validateGetPlacebyUserIdInputs = async (req, res, next) => {
   const { userId } = req.params;
   const places = DUMMY_PLACES.filter((place) => place.creator === userId);
 
@@ -81,10 +87,16 @@ const getPlacesByUserId = async (req, res, next) => {
     return next(new HttpError('Places not found!', 404));
   }
 
-  res.status(200).json({ places });
+  // Forward user's places.
+  req.places = places;
+  next();
 };
 
-const createPlace = async (req, res, next) => {
+const getPlacesByUserId = async (req, res, next) => {
+  res.status(200).json({ places: req.places });
+};
+
+const validateCreatePlaceInputs = async (req, res, next) => {
   const { address, description, title, location, rating, image, creator } =
     req.body;
 
@@ -119,6 +131,7 @@ const createPlace = async (req, res, next) => {
     );
   }
 
+  // Create the place.
   const newPlace = {
     id: uui.v4(),
     title,
@@ -130,20 +143,25 @@ const createPlace = async (req, res, next) => {
     creator,
   };
 
-  DUMMY_PLACES.unshift(newPlace);
+  // Forward the place.
+  req.newPlace = newPlace;
+  next();
+};
+
+const createPlace = async (req, res, next) => {
+  DUMMY_PLACES.unshift(req.newPlace);
 
   // Now newPlace is ready to be added to db.
   // ....
 
   res.json({
-    newPlace,
+    newPlace: req.newPlace,
     allPlaces: DUMMY_PLACES,
   });
 };
 
-const updatePlace = async (req, res, next) => {
+const validateUpdatePlaceInputs = async (req, res, next) => {
   const { placeId } = req.params;
-  const { description, title } = req.body;
 
   // Check if there is invalid fields passed.
   const passedUpdates = Object.keys(req.body);
@@ -158,7 +176,7 @@ const updatePlace = async (req, res, next) => {
     );
   }
 
-  // Update the place.
+  // Find the place.
   const updatedPlace = DUMMY_PLACES.find((place) => place.id === placeId);
   const updatedPlaceIndex = DUMMY_PLACES.findIndex(
     (place) => place.id === placeId
@@ -169,25 +187,31 @@ const updatePlace = async (req, res, next) => {
     return next(new HttpError('Place not found!', 404));
   }
 
-  // Check if there is any updates.
+  req.updatedPlace = updatedPlace;
+  req.placeIndex = updatedPlaceIndex;
+  next();
+};
+
+const updatePlace = async (req, res, next) => {
+  const { description, title } = req.body;
   if (description) {
-    updatedPlace.description = description;
+    req.updatedPlace.description = description;
   }
   if (title) {
-    updatedPlace.placeName = title;
+    req.updatedPlace.placeName = title;
   }
 
   // Add the updated place to the dummy places.
-  DUMMY_PLACES[updatedPlaceIndex] = updatedPlace;
+  DUMMY_PLACES[req.placeIndex] = req.updatedPlace;
 
   res.status(200).json({
     message: 'Place updated successfully.',
-    updatedPlace,
+    updatedPlace: req.updatedPlace,
     allPlaces: DUMMY_PLACES,
   });
 };
 
-const deletePlace = async (req, res, next) => {
+const validateDeletePlaceInputs = async (req, res, next) => {
   const { placeId } = req.params;
 
   // Find the place.
@@ -201,8 +225,15 @@ const deletePlace = async (req, res, next) => {
     return next(new HttpError('Place not found!', 404));
   }
 
+  // Forward the founded place.
+  req.removedPlace = removedPlace;
+  req.removedPlaceIndex = removedPlaceIndex;
+  next();
+};
+
+const deletePlace = async (req, res, next) => {
   // Remove the place from the dummy places.
-  DUMMY_PLACES.splice(removedPlaceIndex, 1);
+  DUMMY_PLACES.splice(req.removedPlaceIndex, 1);
   // OR
   // DUMMY_PLACES = DUMMY_PLACES.filter((place) => removedPlace.id !== place);
 
@@ -213,8 +244,13 @@ const deletePlace = async (req, res, next) => {
 
 module.exports = {
   getPlaceById,
+  validateGetPlaceByIdInputs,
   getPlacesByUserId,
+  validateGetPlacebyUserIdInputs,
   createPlace,
+  validateCreatePlaceInputs,
   updatePlace,
+  validateUpdatePlaceInputs,
   deletePlace,
+  validateDeletePlaceInputs,
 };
