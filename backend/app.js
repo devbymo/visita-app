@@ -17,6 +17,7 @@ app.use('/api/v1/places', placesRoutes);
 app.use('/api/v1/users', usersRoutes);
 
 // Route not found.
+// If the URL does not match any previous route.
 app.use((req, res, next) => {
   next(new HttpError('Route not found!', 404));
 });

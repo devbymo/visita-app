@@ -2,6 +2,7 @@ const uui = require('uuid');
 
 const HttpError = require('../models/http-error');
 const isInputDataValid = require('../utils/isInputsValid');
+const getCoordinates = require('../utils/getCoordinates');
 
 let DUMMY_PLACES = [
   {
@@ -15,7 +16,7 @@ let DUMMY_PLACES = [
       country: 'France',
       city: 'Paris',
     },
-    location: {
+    coordinates: {
       lat: 48.8566,
       lng: 2.3522,
     },
@@ -33,7 +34,7 @@ let DUMMY_PLACES = [
       country: 'Egypt',
       city: 'Alexandria',
     },
-    location: {
+    coordinates: {
       lat: 31.2001,
       lng: 29.9187,
     },
@@ -51,7 +52,7 @@ let DUMMY_PLACES = [
       country: 'Denmark',
       city: 'Copenhagen',
     },
-    location: {
+    coordinates: {
       lat: 55.6761,
       lng: 12.5683,
     },
@@ -97,7 +98,7 @@ const getPlacesByUserId = async (req, res, next) => {
 };
 
 const validateCreatePlaceInputs = async (req, res, next) => {
-  const { address, description, title, location, rating, image, creator } =
+  const { address, description, title, coordinates, rating, image, creator } =
     req.body;
 
   // Check if there is invalid fields passed.
@@ -106,7 +107,7 @@ const validateCreatePlaceInputs = async (req, res, next) => {
     'address',
     'description',
     'title',
-    'location',
+    'coordinates',
     'rating',
     'image',
     'creator',
@@ -131,13 +132,28 @@ const validateCreatePlaceInputs = async (req, res, next) => {
     );
   }
 
+  // Check coordinates.
+  let generatedCoordinatesUsingPassedTitle = {
+    lat: 0,
+    lng: 0,
+  };
+  if (!coordinates) {
+    try {
+      // Generate coordinates.
+      generatedCoordinatesUsingPassedTitle = await getCoordinates(address);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
   // Create the place.
   const newPlace = {
     id: uui.v4(),
     title,
     address,
     description,
-    coordinates: location || { lat: 0, lng: 0 },
+    coordinates: coordinates ||
+      generatedCoordinatesUsingPassedTitle || { lat: 0, lng: 0 },
     rating: rating || 0,
     image,
     creator,
