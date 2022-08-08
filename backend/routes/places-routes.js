@@ -1,4 +1,4 @@
-const express = require('express');
+const { Router } = require('express');
 
 const {
   getPlaceById,
@@ -14,7 +14,7 @@ const {
 } = require('../controllers/places-controllers');
 
 // Init places routes.
-const router = express.Router();
+const router = Router();
 
 // Get place by id.
 router.get('/:placeId', validateGetPlaceByIdInputs, getPlaceById);
