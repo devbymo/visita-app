@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
 const HttpError = require('./models/http-error');
+const errorHandler = require('./controllers/error-controllers');
 
 const app = express();
 
@@ -23,21 +24,8 @@ app.use((req, res, next) => {
 });
 
 // Genaric error handler middleware.
-app.use((error, req, res, next) => {
-  console.log('Error handler middleware..');
-  if (res.headersSent) {
-    return next(error);
-  }
-
-  const { statusCode, message } = error;
-
-  res.status(statusCode || 500);
-  res.json({
-    error: {
-      message: message || 'Something went wrong!',
-    },
-  });
-});
+// All errors is catched here.
+app.use(errorHandler);
 
 app.listen(3000, () => {
   console.log('Server is up on port 3000');
