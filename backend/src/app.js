@@ -1,20 +1,18 @@
 const express = require('express');
+require('./db/mongoose');
 const bodyParser = require('body-parser');
 
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
 const HttpError = require('./models/http-error');
-const errorHandler = require('./controllers/error-controllers');
 
 const app = express();
 
 // Use body parser to parse the body of the requests.
 app.use(bodyParser.json());
 
-// Places routes.
+// Set-up routes.
 app.use('/api/v1/places', placesRoutes);
-
-// Users routes.
 app.use('/api/v1/users', usersRoutes);
 
 // Route not found.
@@ -25,8 +23,20 @@ app.use((req, res, next) => {
 
 // Genaric error handler middleware.
 // All errors is catched here.
-app.use(errorHandler);
+app.use((error, req, res, next) => {
+  console.log('Error handler middleware..');
+  if (res.headersSent) {
+    return next(error);
+  }
 
-app.listen(3000, () => {
-  console.log('Server is up on port 3000');
+  const { statusCode, message } = error;
+
+  res.status(statusCode || 500);
+  res.json({
+    error: {
+      message: message || 'Something went wrong!',
+    },
+  });
 });
+
+module.exports = { app };
