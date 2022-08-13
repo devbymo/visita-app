@@ -210,18 +210,19 @@ const validateUpdatePlaceInputs = async (req, res, next) => {
     );
   }
   // Find the place.
+  let place;
   try {
-    const place = await Place.findById(placeId);
-    // Check if place exists.
-    if (!place) {
-      return next(new HttpError('Place not found!', 404));
-    }
-    // Forward the place.
-    req.placeToUpdate = place;
-    next();
+    place = await Place.findOne({ _id: placeId });
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
+  // Check if place exists.
+  if (!place) {
+    return next(new HttpError('Place not found!', 404));
+  }
+  // Forward the place.
+  req.placeToUpdate = place;
+  next();
 };
 
 const updatePlace = async (req, res, next) => {
@@ -253,14 +254,20 @@ const deletePlace = async (req, res, next) => {
   // Find the place.
   let place;
   try {
-    // Delete the place.
-    place = await Place.findOneAndDelete({ _id: placeId });
+    // Find the place.
+    place = await Place.findOne({ _id: placeId });
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
   // Check if place exists.
   if (!place) {
     return next(new HttpError('Place not found!', 404));
+  }
+  // Delete the place.
+  try {
+    await place.remove();
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
   }
   res.status(200).json({
     message: 'Place deleted successfuly.',
