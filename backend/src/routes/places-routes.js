@@ -1,26 +1,30 @@
 const { Router } = require('express');
 
 const {
+  getAllPlaces,
   getPlaceById,
-  validateGetPlaceByIdInputs,
   getPlacesByUserId,
-  validateGetPlacebyUserIdInputs,
   createPlace,
   validateCreatePlaceInputs,
   updatePlace,
   validateUpdatePlaceInputs,
   deletePlace,
-  validateDeletePlaceInputs,
 } = require('../controllers/places-controllers');
 
 // Init places routes.
 const router = Router();
 
+// =================
+// For Testing purposes.
+// =================
+// Get all places.
+// router.get('/', getAllPlaces);
+
 // Get place by id.
-router.get('/:placeId', validateGetPlaceByIdInputs, getPlaceById);
+router.get('/:placeId', getPlaceById);
 
 // Get places by userId.
-router.get('/user/:userId', validateGetPlacebyUserIdInputs, getPlacesByUserId);
+router.get('/user/:userId', getPlacesByUserId);
 
 // Create place.
 router.post('/create', validateCreatePlaceInputs, createPlace);
@@ -29,7 +33,7 @@ router.post('/create', validateCreatePlaceInputs, createPlace);
 router.patch('/:placeId', validateUpdatePlaceInputs, updatePlace);
 
 // Delete place.
-router.delete('/:placeId', validateDeletePlaceInputs, deletePlace);
+router.delete('/:placeId', deletePlace);
 
 // Export places routes.
 module.exports = router;

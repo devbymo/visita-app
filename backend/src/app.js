@@ -10,6 +10,8 @@ const app = express();
 
 // Use body parser to parse the body of the requests.
 app.use(bodyParser.json());
+// OR
+// app.use(express.json())
 
 // Set-up routes.
 app.use('/api/v1/places', placesRoutes);
