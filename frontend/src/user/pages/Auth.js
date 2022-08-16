@@ -1,4 +1,5 @@
 import React, { useCallback, useReducer, useContext } from 'react';
+import axios from 'axios';
 
 import styled from 'styled-components';
 import Button from '../../shared/components/Button/Button';
@@ -41,6 +42,11 @@ const StyledAuth = styled.div`
     border-radius: 1rem;
     margin-top: 3rem;
   }
+
+  .error-mes {
+    color: red;
+    padding-top: 1rem;
+  }
 `;
 
 const Auth = () => {
@@ -66,6 +72,7 @@ const Auth = () => {
     isLoading: false,
     isLoginMode: true,
     isFormValid: false,
+    error: null,
   };
 
   const formReducer = (state, action) => {
@@ -102,6 +109,11 @@ const Auth = () => {
           ...state,
           isLoginMode: action.isLoginMode,
         };
+      case 'SET_ERROR':
+        return {
+          ...state,
+          error: action.error,
+        };
       case 'RESET':
         return initialState;
       default:
@@ -126,49 +138,90 @@ const Auth = () => {
     [dispatch]
   );
 
-  const authModeHandler = (e) => {
+  const signupHandler = async () => {
+    try {
+      dispatch({ type: 'SET_LOADING', isLoading: true });
+      const res = await fetch('http://localhost:3000/api/v1/users/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formState.name.value,
+          email: formState.email.value,
+          password: formState.password.value,
+          address: formState.address.value,
+        }),
+      });
+
+      const data = await res.json();
+      dispatch({ type: 'SET_LOADING', isLoading: false });
+
+      if (data.error) {
+        dispatch({
+          type: 'SET_ERROR',
+          error: data.error.message || 'Unable to signup!',
+        });
+      } else {
+        dispatch({ type: 'RESET' });
+        login();
+      }
+    } catch (err) {
+      dispatch({ type: 'SET_ERROR', error: err.message });
+      dispatch({ type: 'SET_LOADING', isLoading: false });
+    }
+  };
+
+  const loginHandler = async () => {
+    try {
+      dispatch({ type: 'SET_LOADING', isLoading: true });
+      const res = await fetch('http://localhost:3000/api/v1/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formState.email.value,
+          password: formState.password.value,
+        }),
+      });
+
+      const data = await res.json();
+      dispatch({ type: 'SET_LOADING', isLoading: false });
+
+      if (data.error) {
+        dispatch({
+          type: 'SET_ERROR',
+          error: data.error.message || 'Unable to login!',
+        });
+      } else {
+        dispatch({ type: 'RESET' });
+        login();
+      }
+    } catch (err) {
+      dispatch({ type: 'SET_ERROR', error: err.message });
+      dispatch({ type: 'SET_LOADING', isLoading: false });
+    }
+  };
+
+  const authModelHandler = (e) => {
     // Toggle between login and signup mode.
     e.preventDefault();
     dispatch({ type: 'SET_LOGIN_MODE', isLoginMode: !formState.isLoginMode });
+    dispatch({ type: 'SET_ERROR', error: null });
   };
 
-  const formSubmitHandler = (e) => {
+  const formSubmitHandler = async (e) => {
     e.preventDefault();
-    /////////////////////////////
+    //=============================================
     // Data is valid and can be sent to the server.
-    /////////////////////////////
+    //=============================================
 
-    // Start Loading.
-    dispatch({ type: 'SET_LOADING', isLoading: true });
-
-    // set timeout to simulate server response.
-    setTimeout(() => {
-      if (formState.isLoginMode) {
-        // Login.
-        console.log('Login');
-        console.log(`Email: ${formState.email.value}`);
-        console.log(`Password: ${formState.password.value}`);
-      } else {
-        // Signup.
-        console.log('Signup');
-        console.log(`Name: ${formState.name.value}`);
-        console.log(`Email: ${formState.email.value}`);
-        console.log(`Password: ${formState.password.value}`);
-        console.log(`Address: ${formState.address.value}`);
-      }
-
-      // Update context.
-      login();
-
-      // Update the form submmited state.
-      dispatch({ type: 'SET_FORM_SUBMITTED', isFormSubmitted: true });
-
-      // Stop Loading.
-      dispatch({ type: 'SET_LOADING', isLoading: false });
-
-      // Reset the form.
-      // dispatch({ type: 'RESET' });
-    }, 700);
+    if (formState.isLoginMode) {
+      loginHandler();
+    } else {
+      signupHandler();
+    }
   };
 
   const loginValidityHandler = () => {
@@ -203,6 +256,7 @@ const Auth = () => {
         <>
           <h1>{formState.isLoginMode ? 'Login' : 'Signup'}</h1>
           <form className="form-container">
+            <p className="error-mes">{formState.error && formState.error}</p>
             {!formState.isLoginMode && (
               <Input
                 id="name"
@@ -211,7 +265,7 @@ const Auth = () => {
                 placeholder="Ex. Mohamed Yasser"
                 lable="Name *"
                 errorText="Please enter a valid name"
-                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(2)]}
                 onInput={inputChangeHandler}
               />
             )}
@@ -223,7 +277,7 @@ const Auth = () => {
                 placeholder="Ex. Egypt - Alexandria"
                 lable="Adress *"
                 errorText="Please enter a valid address"
-                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(10)]}
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
                 onInput={inputChangeHandler}
               />
             )}
@@ -268,7 +322,7 @@ const Auth = () => {
                 {formState.isLoginMode ? 'LOGIN' : 'SIGNUP'}
               </Button>
             )}
-            <Button danger onClick={authModeHandler}>
+            <Button danger onClick={authModelHandler}>
               SWITCH TO {formState.isLoginMode ? 'SIGNUP' : 'LOGIN'}
             </Button>
           </form>

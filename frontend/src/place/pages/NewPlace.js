@@ -41,6 +41,10 @@ const StyledNewPlace = styled.div`
     padding: 3rem 5rem;
     border-radius: 1rem;
     margin-top: 3rem;
+
+    .error-mes {
+      color: #ff0000;
+    }
   }
 `;
 
@@ -72,6 +76,7 @@ const initialState = {
   isFormValid: false,
   isFormSubmitted: false,
   isLoading: false,
+  error: null,
 };
 
 const formReducer = (state, action) => {
@@ -133,6 +138,11 @@ const formReducer = (state, action) => {
       return {
         ...state,
         isLoading: action.isLoading,
+      };
+    case 'ERROR':
+      return {
+        ...state,
+        error: action.error,
       };
     default:
       return state;
@@ -221,37 +231,67 @@ const NewPlace = () => {
     });
   };
 
-  const onFormSubmitHandler = (e) => {
-    e.preventDefault();
-    // Start loading.
-    dispatch({
-      type: 'LOADING',
-      isLoading: true,
-    });
-
-    // for Testing.
-    setTimeout(() => {
-      // Here our data is valid and we can send it to the server.
-      console.log(formState);
-
-      // Update form submmited state.
+  const createNewPlaceHandler = async () => {
+    try {
       dispatch({
-        type: 'FORM_SUBMITTED',
-        isFormSubmitted: true,
+        type: 'LOADING',
+        isLoading: true,
       });
 
-      // Stop loading.
+      const res = await fetch('http://localhost:3000/api/v1/places/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: formState.requiredInputs.title.value,
+          address: formState.requiredInputs.address.value,
+          description: formState.requiredInputs.description.value,
+          creator: '62fbcdb0469248a482c45f47',
+          image:
+            'https://images.unsplash.com/photo-1518791841217-8f162f1e231?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
+          coordinates: {
+            lat: formState.optionalInputs.location.lat,
+            lng: formState.optionalInputs.location.lng,
+          },
+          rating: formState.optionalInputs.rating,
+        }),
+      });
+
+      const resData = await res.json();
+
       dispatch({
         type: 'LOADING',
         isLoading: false,
       });
-    }, 700);
+
+      if (resData.error) {
+        dispatch({
+          type: 'ERROR',
+          error: resData.error.message,
+        });
+      }
+
+      if (resData.createdPlace) {
+        dispatch({
+          type: 'FORM_SUBMITTED',
+          isFormSubmitted: true,
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: 'ERROR',
+        error: err.message,
+      });
+    }
   };
 
-  // For testing only.
-  if (formState.isFormSubmitted) {
-    console.log(formState);
-  }
+  const onFormSubmitHandler = async (e) => {
+    e.preventDefault();
+
+    // Send the form data to the server.
+    createNewPlaceHandler();
+  };
 
   return (
     <StyledNewPlace>
@@ -280,6 +320,7 @@ const NewPlace = () => {
       ) : null}
       <h1>Add New Place</h1>
       <form className="form-container">
+        <p className="error-mes">{formState.error && formState.error}</p>
         <Input
           id="title"
           element="input"
@@ -289,8 +330,8 @@ const NewPlace = () => {
           errorText="Please enter a valid title"
           validators={[
             VALIDATOR_REQUIRE(),
-            VALIDATOR_MAXLENGTH(30),
-            VALIDATOR_MINLENGTH(2),
+            VALIDATOR_MAXLENGTH(50),
+            VALIDATOR_MINLENGTH(3),
           ]}
           onInput={inputChangedHandler}
           value={formState.requiredInputs.title.value}
@@ -304,8 +345,8 @@ const NewPlace = () => {
           errorText="Please enter a valid address"
           validators={[
             VALIDATOR_REQUIRE(),
-            VALIDATOR_MAXLENGTH(30),
-            VALIDATOR_MINLENGTH(2),
+            VALIDATOR_MAXLENGTH(50),
+            VALIDATOR_MINLENGTH(5),
           ]}
           onInput={inputChangedHandler}
           value={formState.requiredInputs.address.value}
@@ -322,7 +363,7 @@ const NewPlace = () => {
           errorText="Please enter a discription of at least 10 characters"
           validators={[
             VALIDATOR_REQUIRE(),
-            VALIDATOR_MINLENGTH(5),
+            VALIDATOR_MINLENGTH(10),
             VALIDATOR_MAXLENGTH(500),
           ]}
           onInput={inputChangedHandler}

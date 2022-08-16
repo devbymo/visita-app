@@ -243,7 +243,12 @@ const createPlace = async (req, res, next) => {
     // Commit the transaction.
     await session.commitTransaction();
   } catch (error) {
-    return next(new HttpError('Creating place faild, please try again.', 500));
+    return next(
+      new HttpError(
+        error.message || 'Creating place faild, please try again.',
+        500
+      )
+    );
   }
 
   res.json({

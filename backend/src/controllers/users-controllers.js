@@ -116,7 +116,6 @@ const login = async (req, res, next) => {
   try {
     user = await User.findByCredentials(email, password);
   } catch (error) {
-    console.log(error.message);
     return next(new HttpError('Unable to login!', 401));
   }
 

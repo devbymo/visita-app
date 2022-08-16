@@ -9,7 +9,7 @@ const placeSchema = new Schema(
       required: [true, 'Title is required!'],
       trim: true,
       minLength: [3, 'Title must be at least 3 characters long!'],
-      maxLength: [30, 'Title must be less than 30 characters long!'],
+      maxLength: [50, 'Title must be less than 50 characters long!'],
     },
     description: {
       type: String,
@@ -26,7 +26,7 @@ const placeSchema = new Schema(
       type: String,
       required: [true, 'Address is required!'],
       trim: true,
-      minLength: [4, 'Address must be at least 10 characters long!'],
+      minLength: [5, 'Address must be at least 5 characters long!'],
       maxLength: [50, 'Address must be less than 50 characters long!'],
     },
     coordinates: {
