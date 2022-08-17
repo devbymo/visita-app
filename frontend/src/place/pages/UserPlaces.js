@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import PlaceList from '../components/PlaceList';
 import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
 import { AuthContext } from '../../shared/context/auth-context';
+import PlaceNotFound from '../components/PlaceNotFound';
 
 const StyledPlaces = styled.div`
   padding: 10rem 0;
@@ -79,6 +80,7 @@ const UserPlaces = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { userId } = useParams();
+  const { userId: authanticatedUserId } = useContext(AuthContext);
 
   const getUserPlaces = async () => {
     setIsLoading(true);
@@ -125,7 +127,16 @@ const UserPlaces = () => {
       ) : (
         <PlaceList places={userPlaces} userId={userId} />
       )}
-      {error && <p className="error-msg">{error}</p>}
+      {/* {error && <p className="error-msg">{error}</p>} */}
+      {authanticatedUserId === userId && userPlaces.length ? (
+        <PlaceNotFound
+          errorMessage="There is no places to show!"
+          buttonText="ADD NEW PLACE"
+          to="/places/new"
+        />
+      ) : (
+        <p className="error-msg">{error}</p>
+      )}
     </StyledPlaces>
   );
 };

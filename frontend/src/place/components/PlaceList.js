@@ -11,20 +11,20 @@ const StyledPlaceList = styled.div`
 `;
 
 const PlaceList = (props) => {
-  const { userId: authanticatedUserId } = useContext(AuthContext);
+  // const { userId: authanticatedUserId } = useContext(AuthContext);
 
-  console.log(`userId: ${props.userId}`);
-  console.log(`authanticatedId: ${authanticatedUserId}`);
+  // console.log(`userId: ${props.userId}`);
+  // console.log(`authanticatedId: ${authanticatedUserId}`);
 
-  if (props.places.length === 0 && props.userId === authanticatedUserId) {
-    return (
-      <PlaceNotFound
-        errorMessage="There is no places to show!"
-        buttonText="ADD NEW PLACE"
-        to="/places/new"
-      />
-    );
-  }
+  // if (props.places.length === 0 && props.userId === authanticatedUserId) {
+  //   return (
+  //     <PlaceNotFound
+  //       errorMessage="There is no places to show!"
+  //       buttonText="ADD NEW PLACE"
+  //       to="/places/new"
+  //     />
+  //   );
+  // }
 
   return (
     <StyledPlaceList>
