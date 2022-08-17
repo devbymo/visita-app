@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback, useReducer, useContext } from 'react';
 import styled from 'styled-components';
 import Input from '../../shared/components/Input/Input';
 import {
@@ -11,6 +11,7 @@ import GetUserLocation from '../components/GetUserLocation';
 import Modal from '../../shared/components/UI/Modal';
 import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
 import ReactStars from 'react-rating-stars-component';
+import { AuthContext } from '../../shared/context/auth-context';
 
 const StyledNewPlace = styled.div`
   display: flex;
@@ -150,6 +151,8 @@ const formReducer = (state, action) => {
 };
 
 const NewPlace = () => {
+  const { userId } = useContext(AuthContext);
+
   // Managing the overall (form) state.
   const [formState, dispatch] = useReducer(formReducer, initialState);
 
@@ -247,9 +250,9 @@ const NewPlace = () => {
           title: formState.requiredInputs.title.value,
           address: formState.requiredInputs.address.value,
           description: formState.requiredInputs.description.value,
-          creator: '62fbcdb0469248a482c45f47',
+          creator: userId,
           image:
-            'https://images.unsplash.com/photo-1518791841217-8f162f1e231?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
+            'https://images.unsplash.com/photo-1550340499-a6c60fc8287c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
           coordinates: {
             lat: formState.optionalInputs.location.lat,
             lng: formState.optionalInputs.location.lng,
@@ -265,7 +268,7 @@ const NewPlace = () => {
         isLoading: false,
       });
 
-      if (resData.error) {
+      if (resData.error || !res.ok) {
         dispatch({
           type: 'ERROR',
           error: resData.error.message,

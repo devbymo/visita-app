@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import UserList from '../components/UserList';
 import styled from 'styled-components';
+import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
 
 const DUMMY_USERS = [
   {
@@ -54,12 +55,59 @@ const StyledUsers = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+
+  .error-msg {
+    color: red;
+    font-size: 2.2rem;
+  }
 `;
 
 const Users = () => {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchUsers = async () => {
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('http://localhost:3000/api/v1/users');
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        setError(data.error.message);
+      }
+
+      if (data.users.length > 0) {
+        setUsers(data.users);
+      } else {
+        setError('There is no users to display!');
+      }
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   return (
     <StyledUsers>
-      <UserList users={DUMMY_USERS} />
+      {users.length > 0 && <UserList users={users} />}
+      {isLoading && (
+        <LoaderSpinner
+          isVisable={true}
+          color="#3498db"
+          backgroundColor="#f3f3f3"
+          size=".5"
+          widthAndHeight="4"
+          speedInSecond=".6"
+        />
+      )}
+      {error && <p className="error-msg">{error}</p>}
     </StyledUsers>
   );
 };

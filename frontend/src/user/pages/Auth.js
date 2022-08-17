@@ -157,14 +157,14 @@ const Auth = () => {
       const data = await res.json();
       dispatch({ type: 'SET_LOADING', isLoading: false });
 
-      if (data.error) {
+      if (data.error || !res.ok) {
         dispatch({
           type: 'SET_ERROR',
           error: data.error.message || 'Unable to signup!',
         });
       } else {
         dispatch({ type: 'RESET' });
-        login();
+        login(data.user.id);
       }
     } catch (err) {
       dispatch({ type: 'SET_ERROR', error: err.message });
@@ -189,14 +189,14 @@ const Auth = () => {
       const data = await res.json();
       dispatch({ type: 'SET_LOADING', isLoading: false });
 
-      if (data.error) {
+      if (data.error || !res.ok) {
         dispatch({
           type: 'SET_ERROR',
           error: data.error.message || 'Unable to login!',
         });
       } else {
         dispatch({ type: 'RESET' });
-        login();
+        login(data.user.id);
       }
     } catch (err) {
       dispatch({ type: 'SET_ERROR', error: err.message });

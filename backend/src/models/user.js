@@ -32,6 +32,8 @@ const userSchema = new Schema(
     },
     image: {
       type: String,
+      default:
+        'https://images.unsplash.com/photo-1548189797-82c6a7cb85d2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDM5fHRvd0paRnNrcEdnfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
     },
     address: {
       type: String,

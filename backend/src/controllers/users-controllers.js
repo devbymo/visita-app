@@ -7,11 +7,11 @@ const getUsers = async (req, res, next) => {
   let users;
 
   // Check if the user is admin.
-  if (req.body.accessKey !== process.env.ADMIN_PASSWORD) {
-    return next(
-      new HttpError('You are not authorized to perform this action.', 401)
-    );
-  }
+  // if (req.body.accessKey !== process.env.ADMIN_PASSWORD) {
+  //   return next(
+  //     new HttpError('You are not authorized to perform this action.', 401)
+  //   );
+  // }
 
   // Get all users.
   try {

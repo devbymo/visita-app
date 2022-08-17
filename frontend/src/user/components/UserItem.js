@@ -100,9 +100,7 @@ const UserItem = (props) => {
           </div>
           <div className="user__info">
             <h2 className="user__name">{props.name} ✔</h2>
-            <p className="user__address">
-              {props.country}/{props.city} &#127962;
-            </p>
+            <p className="user__address">{props.address} &#127962;</p>
             <p className="user__places">
               {props.placeNums} {props.placeNums > 1 ? 'Places' : 'Place'}{' '}
               &#128204;

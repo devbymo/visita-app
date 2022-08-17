@@ -39,6 +39,11 @@ const placeSchema = new Schema(
         required: [true, 'Longitude is required!'],
       },
     },
+    rating: {
+      type: Number,
+      min: [1, 'Rating can not be less than 1!'],
+      max: [5, 'Rating can not be more than 5!'],
+    },
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'User',

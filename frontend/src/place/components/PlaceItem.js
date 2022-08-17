@@ -100,7 +100,6 @@ const PlaceItem = (props) => {
   const removePlaceHandler = () => {
     // You delete the place from the server....
     closeRemoveModalHandler();
-    console.log('The place was removed.');
   };
 
   // Auth context.
@@ -135,7 +134,7 @@ const PlaceItem = (props) => {
           buttonTextColorHover="#fff"
           buttonFontSize="1.5rem"
         >
-          {<Map location={props.location} /> || 'Unable to display the map!'}
+          {<Map location={props.coordinates} /> || 'Unable to display the map!'}
         </Modal>
       )}
       {showRemoveModal && (
@@ -169,9 +168,7 @@ const PlaceItem = (props) => {
       {/* Info */}
       <div className="place-item__info">
         <h2 className="place-item__name">{props.placeName} &#127919;</h2>
-        <p className="place-item__address">
-          {props.address.country}/{props.address.city} &#127962;
-        </p>
+        <p className="place-item__address">{props.address} &#127962;</p>
         <p className="place-item__description">{props.description} &#127915;</p>
         {createStars(props.rating)}
       </div>

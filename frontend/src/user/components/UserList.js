@@ -8,13 +8,13 @@ const StyledUsers = styled.ul`
 `;
 
 const UserList = (props) => {
-  if (props.users.length === 0) {
-    return (
-      <div className="users-container">
-        <h2>There is no users to display!!</h2>
-      </div>
-    );
-  }
+  // if (props.users.length === 0) {
+  //   return (
+  //     <div className="users-container">
+  //       <h2>There is no users to display!!</h2>
+  //     </div>
+  //   );
+  // }
   return (
     <StyledUsers>
       {props.users.map((user) => (
@@ -23,9 +23,8 @@ const UserList = (props) => {
           id={user.id}
           name={user.name}
           image={user.image}
-          country={user.address.country}
-          city={user.address.city}
-          placeNums={user.placeNums}
+          address={user.address}
+          placeNums={user.places.length}
         />
       ))}
     </StyledUsers>

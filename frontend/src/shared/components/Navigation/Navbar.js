@@ -6,12 +6,12 @@ import { AuthContext } from '../../context/auth-context';
 import StyledNavbar from './StyledNavbar';
 
 const Navbar = () => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, userId } = useContext(AuthContext);
 
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
-    setOpen(!open); 
+    setOpen(!open);
   };
 
   const closeMenu = () => {
@@ -36,7 +36,7 @@ const Navbar = () => {
         {isAuthenticated && (
           <li className="nav-item">
             <NavLink
-              to="/user-id/places"
+              to={`/${userId}/places`}
               className="nav-link"
               activeClassName={'nav-link-active'}
               onClick={closeMenu}

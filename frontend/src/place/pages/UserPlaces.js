@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import PlaceList from '../components/PlaceList';
+import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
+import { AuthContext } from '../../shared/context/auth-context';
 
 const StyledPlaces = styled.div`
   padding: 10rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  .error-msg {
+    color: red;
+    font-size: 2.2rem;
+  }
 `;
 
 const DUMMY_PLACES = [
@@ -68,12 +75,57 @@ const DUMMY_PLACES = [
 ];
 
 const UserPlaces = () => {
+  const [userPlaces, setUserPlaces] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { userId } = useParams();
-  const places = DUMMY_PLACES.filter((place) => place.creator === userId);
+
+  const getUserPlaces = async () => {
+    setIsLoading(true);
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/v1/places/user/${userId}`
+      );
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        setError(data.error.message);
+      }
+
+      if (data.places) {
+        setUserPlaces(data.places);
+      } else {
+        setError('There is no places to display!');
+      }
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+      // setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUserPlaces();
+  }, []);
+
+  // const places = DUMMY_PLACES.filter((place) => place.creator === userId);
 
   return (
     <StyledPlaces>
-      <PlaceList places={places} />
+      {isLoading ? (
+        <LoaderSpinner
+          isVisable={true}
+          color="#3498db"
+          backgroundColor="#f3f3f3"
+          size=".5"
+          widthAndHeight="4"
+          speedInSecond=".6"
+        />
+      ) : (
+        <PlaceList places={userPlaces} userId={userId} />
+      )}
+      {error && <p className="error-msg">{error}</p>}
     </StyledPlaces>
   );
 };
