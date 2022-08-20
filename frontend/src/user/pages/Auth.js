@@ -1,5 +1,4 @@
 import React, { useCallback, useReducer, useContext } from 'react';
-import axios from 'axios';
 
 import styled from 'styled-components';
 import Button from '../../shared/components/Button/Button';

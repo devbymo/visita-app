@@ -18,7 +18,9 @@ const PlaceNotFound = (props) => {
   return (
     <StyledNotFoundPlace>
       <p>{props.errorMessage || 'There is no place!'}</p>
-      <Button to={props.to || '/'}>{props.buttonText || 'HOME'}</Button>
+      {props.buttonText && props.to && (
+        <Button to={props.to || '/'}>{props.buttonText || 'HOME'}</Button>
+      )}
     </StyledNotFoundPlace>
   );
 };

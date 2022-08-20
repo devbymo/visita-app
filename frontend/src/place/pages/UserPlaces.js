@@ -111,8 +111,6 @@ const UserPlaces = () => {
     getUserPlaces();
   }, []);
 
-  // const places = DUMMY_PLACES.filter((place) => place.creator === userId);
-
   return (
     <StyledPlaces>
       {isLoading ? (
@@ -127,15 +125,18 @@ const UserPlaces = () => {
       ) : (
         <PlaceList places={userPlaces} userId={userId} />
       )}
-      {/* {error && <p className="error-msg">{error}</p>} */}
-      {authanticatedUserId === userId && userPlaces.length ? (
-        <PlaceNotFound
-          errorMessage="There is no places to show!"
-          buttonText="ADD NEW PLACE"
-          to="/places/new"
-        />
+      {userPlaces.length === 0 || !userPlaces ? (
+        authanticatedUserId === userId ? (
+          <PlaceNotFound
+            errorMessage="There is no places to show!"
+            buttonText="ADD NEW PLACE"
+            to="/places/new"
+          />
+        ) : (
+          <PlaceNotFound errorMessage="There is no places to show!" />
+        )
       ) : (
-        <p className="error-msg">{error}</p>
+        ''
       )}
     </StyledPlaces>
   );
