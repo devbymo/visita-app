@@ -7,6 +7,7 @@ import { AuthContext } from '../../shared/context/auth-context';
 import PlaceNotFound from '../components/PlaceNotFound';
 
 const StyledPlaces = styled.div`
+  height: 100vh;
   padding: 10rem 0;
   display: flex;
   justify-content: center;
@@ -137,15 +138,19 @@ const UserPlaces = () => {
           onDelete={handleDeletePlace}
         />
       )}
-      {userPlaces.length === 0 || !userPlaces ? (
-        authanticatedUserId === userId ? (
-          <PlaceNotFound
-            errorMessage="There is no places to show!"
-            buttonText="ADD NEW PLACE"
-            to="/places/new"
-          />
+      {!isLoading ? (
+        userPlaces.length === 0 || !userPlaces ? (
+          authanticatedUserId === userId ? (
+            <PlaceNotFound
+              errorMessage="There is no places to show!"
+              buttonText="ADD NEW PLACE"
+              to="/places/new"
+            />
+          ) : (
+            <PlaceNotFound errorMessage="There is no places to show!" />
+          )
         ) : (
-          <PlaceNotFound errorMessage="There is no places to show!" />
+          ''
         )
       ) : (
         ''

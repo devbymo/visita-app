@@ -10,6 +10,7 @@ import {
 } from '../../shared/util/validators';
 import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
 import { AuthContext } from '../../shared/context/auth-context';
+import ImageUpload from '../../shared/components/ImageUpload/ImageUpload';
 
 const StyledAuth = styled.div`
   display: flex;
@@ -17,14 +18,15 @@ const StyledAuth = styled.div`
   justify-content: center;
   align-items: center;
   color: #000;
-  width: 100vw;
-  height: 100vh;
+  max-width: 100vw;
   font-size: 2rem;
   padding-top: 7rem;
+  padding-bottom: 7rem;
 
   h1 {
     font-size: 4rem;
     font-weight: 500;
+    margin-top: 5rem;
   }
 
   .form-container {
@@ -35,7 +37,7 @@ const StyledAuth = styled.div`
     gap: 4rem;
     color: #000;
     font-size: 2rem;
-    width: 30vw;
+    width: 35vw;
     background-color: #ebebeb;
     padding: 3rem 5rem;
     border-radius: 1rem;
@@ -65,6 +67,10 @@ const Auth = () => {
     },
     address: {
       value: '',
+      isValid: false,
+    },
+    image: {
+      value: null,
       isValid: false,
     },
     isFormSubmitted: false,
@@ -279,6 +285,9 @@ const Auth = () => {
                 validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
                 onInput={inputChangeHandler}
               />
+            )}
+            {!formState.isLoginMode && (
+              <ImageUpload id="image" onInput={inputChangeHandler} />
             )}
             <Input
               id="email"
