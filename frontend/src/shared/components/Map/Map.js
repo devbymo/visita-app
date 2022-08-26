@@ -14,21 +14,22 @@ const Map = (props) => {
   const mapRef = useRef();
   const { lat, lng } = props.location;
   const zoomValue = 10;
+  console.log(lat, lng);
 
   // It will run only once when the component is mounted, and if one of the dependencies changes, it will run again
   useEffect(() => {
     const map = new window.google.maps.Map(mapRef.current, {
       center: {
-        lat,
-        lng,
+        lat: +lat,
+        lng: +lng,
       },
       zoom: zoomValue,
     });
 
     new window.google.maps.Marker({
       position: {
-        lat,
-        lng,
+        lat: +lat,
+        lng: +lng,
       },
       map,
     });

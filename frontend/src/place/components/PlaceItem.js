@@ -76,6 +76,9 @@ const StyledPlaceItem = styled.li`
   }
 `;
 const PlaceItem = (props) => {
+  // Auth context.
+  const { isAuthenticated, userId } = useContext(AuthContext);
+
   // Map modal handlers.
   const [showMapModal, setShowMapModal] = useState(false);
   const openMapModelHandler = (e) => {
@@ -97,13 +100,30 @@ const PlaceItem = (props) => {
     setShowRemoveModal(false);
   };
 
-  const removePlaceHandler = () => {
-    // You delete the place from the server....
+  const removePlaceHandler = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/v1/places/${props.id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const result = await res.json();
+
+      if (result.error) {
+        console.log(result.error);
+      }
+
+      props.onDelete(props.id);
+    } catch (err) {
+      console.log(err);
+    }
+
     closeRemoveModalHandler();
   };
-
-  // Auth context.
-  const { isAuthenticated } = useContext(AuthContext);
 
   // Create stars rating from 0 to 5
   const createStars = (rating) => {
@@ -175,10 +195,10 @@ const PlaceItem = (props) => {
       {/* Actions */}
       <div className="place-item__actions">
         <Button onClick={openMapModelHandler}>VIEW ON MAP</Button>
-        {isAuthenticated && (
+        {isAuthenticated && userId === props.creatorId && (
           <Button to={`/${props.creatorId}/places/${props.id}`}>EDIT</Button>
         )}
-        {isAuthenticated && (
+        {isAuthenticated && userId === props.creatorId && (
           <Button danger onClick={openRemoveModalHandler}>
             REMOVE
           </Button>

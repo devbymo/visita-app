@@ -22,6 +22,7 @@ const PlaceList = (props) => {
           creatorId={place.creator}
           rating={place.rating}
           location={place.location}
+          onDelete={props.onDelete}
         />
       ))}
     </StyledPlaceList>

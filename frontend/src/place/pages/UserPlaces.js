@@ -107,6 +107,14 @@ const UserPlaces = () => {
     }
   };
 
+  const handleDeletePlace = async (placeId) => {
+    setIsLoading(true);
+
+    const newPlaces = userPlaces.filter((place) => place.id !== placeId);
+    setUserPlaces(newPlaces);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     getUserPlaces();
   }, []);
@@ -123,7 +131,11 @@ const UserPlaces = () => {
           speedInSecond=".6"
         />
       ) : (
-        <PlaceList places={userPlaces} userId={userId} />
+        <PlaceList
+          places={userPlaces}
+          userId={userId}
+          onDelete={handleDeletePlace}
+        />
       )}
       {userPlaces.length === 0 || !userPlaces ? (
         authanticatedUserId === userId ? (

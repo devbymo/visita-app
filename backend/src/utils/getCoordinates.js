@@ -10,9 +10,10 @@ const getCoordinates = async (address) => {
   const data = res.data;
 
   const coordinates = {
-    lat: data.features[0].geometry.coordinates[1] || 0,
-    lng: data.features[0].geometry.coordinates[0] || 0,
+    lat: data.features[0].geometry.coordinates[1],
+    lng: data.features[0].geometry.coordinates[0],
   };
+
   return coordinates;
 };
 

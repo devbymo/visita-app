@@ -100,33 +100,32 @@ const StyledUpdatePlace = styled.div`
     border-radius: 1rem;
     margin-top: 3rem;
   }
+
+  .error-msg {
+    color: red;
+  }
 `;
 
 const NewPlace = () => {
   // Get the placeId from the url.
   const { placeId, creatorId } = useParams();
 
-  // Get the place.
-  const place = DUMMY_PLACES.find((place) => place.id === +placeId);
-
   // Managing the overall (form) state.
-  let initialState = {};
-
-  if (place) {
-    initialState = {
-      title: {
-        value: place.placeName,
-        isValid: true,
-      },
-      description: {
-        value: place.description,
-        isValid: true,
-      },
-      rating: place.rating,
-      isLoading: false,
-      isFormSubmitted: false,
-    };
-  }
+  let initialState = {
+    title: {
+      value: '',
+      isValid: true,
+    },
+    description: {
+      value: '',
+      isValid: true,
+    },
+    rating: 0,
+    isLoading: false,
+    isLoadingUpdate: false,
+    isFormSubmitted: false,
+    error: null,
+  };
 
   const formReducer = (state, action) => {
     switch (action.type) {
@@ -144,6 +143,11 @@ const NewPlace = () => {
           ...state,
           isLoading: action.isLoading,
         };
+      case 'LOADING_UPDATE':
+        return {
+          ...state,
+          isLoadingUpdate: action.isLoadingUpdate,
+        };
       case 'FORM_SUBMITTED':
         return {
           ...state,
@@ -151,6 +155,11 @@ const NewPlace = () => {
         };
       case 'RESET_FORM':
         return initialState;
+      case 'ERROR':
+        return {
+          ...state,
+          error: action.error,
+        };
       default:
         return state;
     }
@@ -188,46 +197,128 @@ const NewPlace = () => {
     });
   };
 
-  const onFormSubmitHandler = (e) => {
-    e.preventDefault();
-    // Start loading.
+  const fetchPlaceById = async () => {
     dispatch({
       type: 'LOADING',
       isLoading: true,
     });
 
-    // for Testing.
-    setTimeout(() => {
-      // Here our data is valid and we can send it to the server.
-      console.log(formState);
+    try {
+      const res = await fetch(`http://localhost:3000/api/v1/places/${placeId}`);
+      const data = await res.json();
 
-      // Update form submmited state.
-      dispatch({
-        type: 'FORM_SUBMITTED',
-        isFormSubmitted: true,
-      });
+      if (!data.place) {
+        dispatch({
+          type: 'ERROR',
+          error: 'There is no places to update!',
+        });
+      }
 
-      // Stop loading.
+      if (data.place.creator !== creatorId) {
+        dispatch({
+          type: 'ERROR',
+          error: 'You are not the creator of this place!',
+        });
+      }
+
+      if (data.place.creator === creatorId) {
+        dispatch({
+          type: 'INPUT_CHANGE',
+          value: data.place.title,
+          isValid: true,
+          input: 'title',
+        });
+        dispatch({
+          type: 'INPUT_CHANGE',
+          value: data.place.description,
+          isValid: true,
+          input: 'description',
+        });
+        dispatch({
+          type: 'INPUT_CHANGE',
+          value: data.place.rating,
+          isValid: true,
+          input: 'rating',
+        });
+      }
+
       dispatch({
         type: 'LOADING',
         isLoading: false,
       });
-    }, 700);
+    } catch (err) {
+      dispatch({
+        type: 'ERROR',
+        error: err.message,
+      });
+      dispatch({
+        type: 'LOADING',
+        isLoading: false,
+      });
+    }
   };
 
-  // Check if the place is exist or not.
-  if (!place) {
-    return (
-      <PlaceNotFound
-        errorMessage="There is no place to update!"
-        buttonText="ADD NEW PLACE"
-        to="/places/new"
-      />
-    );
-  }
+  const updatePlace = async () => {
+    dispatch({
+      type: 'LOADING_UPDATE',
+      isLoadingUpdate: true,
+    });
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/v1/places/${placeId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: formState.title.value,
+            description: formState.description.value,
+          }),
+        }
+      );
+      const data = await res.json();
+
+      dispatch({
+        type: 'LOADING_UPDATE',
+        isLoadingUpdate: false,
+      });
+      dispatch({
+        type: 'FORM_SUBMITTED',
+        isFormSubmitted: true,
+      });
+    } catch (err) {
+      dispatch({
+        type: 'ERROR',
+        error: err.message,
+      });
+      dispatch({
+        type: 'LOADING_UPDATE',
+        isLoadingUpdate: false,
+      });
+
+      dispatch({
+        type: 'FORM_SUBMITTED',
+        isFormSubmitted: false,
+      });
+    }
+  };
+
+  const onFormSubmitHandler = (e) => {
+    e.preventDefault();
+
+    updatePlace();
+  };
+
+  // Fetch the place by id.
+  useEffect(() => {
+    fetchPlaceById();
+  }, []);
 
   return (
     <StyledUpdatePlace>
+      <h1>Update Place</h1>
       {formState.isFormSubmitted ? (
         <Modal
           show={formState.isFormSubmitted}
@@ -249,10 +340,30 @@ const NewPlace = () => {
           buttonTextColorHover="#fff"
           buttonTo={`/${creatorId}/places`}
         >
-          The place updated sussessfully.
+          {formState.error ? (
+            <p>{formState.error}</p>
+          ) : (
+            <p>Place updated successfully!</p>
+          )}
         </Modal>
       ) : null}
-      <h1>Update Place</h1>
+      {formState.error && (
+        <PlaceNotFound
+          errorMessage="There is no place to update!"
+          buttonText="ADD NEW PLACE"
+          to="/places/new"
+        />
+      )}
+      {formState.isLoading && (
+        <LoaderSpinner
+          isVisable={true}
+          color="#3498db"
+          backgroundColor="#f3f3f3"
+          size=".5"
+          widthAndHeight="4"
+          speedInSecond=".6"
+        />
+      )}
       <form className="form-container">
         <Input
           id="title"
@@ -284,17 +395,6 @@ const NewPlace = () => {
           value={formState.description.value}
           valid={formState.description.isValid}
         />
-        <ReactStars
-          count={5}
-          onChange={ratingChangedHandler}
-          size={35}
-          isHalf={true}
-          emptyIcon={<i className="far fa-star"></i>}
-          halfIcon={<i className="fa fa-star-half-alt"></i>}
-          fullIcon={<i className="fa fa-star"></i>}
-          activeColor="#ffd700"
-          value={formState.rating}
-        />
         {formState.isLoading && (
           <LoaderSpinner
             isVisable={true}
@@ -305,7 +405,7 @@ const NewPlace = () => {
             speedInSecond=".6"
           />
         )}
-        {!formState.isLoading && (
+        {!formState.isLoadingUpdate ? (
           <Button
             onClick={onFormSubmitHandler}
             disabled={
@@ -314,6 +414,15 @@ const NewPlace = () => {
           >
             UPDATE PLACE
           </Button>
+        ) : (
+          <LoaderSpinner
+            isVisable={true}
+            color="#3498db"
+            backgroundColor="#f3f3f3"
+            size=".5"
+            widthAndHeight="4"
+            speedInSecond=".6"
+          />
         )}
       </form>
     </StyledUpdatePlace>
