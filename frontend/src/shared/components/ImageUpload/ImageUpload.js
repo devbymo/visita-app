@@ -8,18 +8,18 @@ const StyledImageUpload = styled.div`
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: 1rem;
     overflow: hidden;
     background-color: #ebebeb;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border-radius: 1rem;
   }
 
   .image-upload__preview {
     width: 40rem;
-    height: 60rem;
+    height: ${(props) => props.previewHeight || '40rem'};
     border: 1px solid #ccc;
     display: flex;
     justify-content: center;
@@ -77,7 +77,7 @@ const ImageUpload = (props) => {
   };
 
   return (
-    <StyledImageUpload>
+    <StyledImageUpload previewHeight={props.previewHeight}>
       <input
         id={props.id}
         ref={filePickerRef}

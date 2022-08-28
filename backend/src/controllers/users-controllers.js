@@ -71,6 +71,7 @@ const signup = async (req, res, next) => {
     email,
     password,
     address,
+    image: req.file.path ? `${req.file.destination}/${req.file.filename}` : '',
   });
 
   // Save the user.

@@ -1,6 +1,8 @@
 const express = require('express');
 require('./db/mongoose');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
 
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
@@ -14,6 +16,9 @@ const app = express();
 app.use(bodyParser.json());
 // OR
 // app.use(express.json())
+
+// Staticly serve the images folder.
+app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 // CORS middleware
 app.use((req, res, next) => {
@@ -37,6 +42,12 @@ app.use((req, res, next) => {
 // Genaric error handler middleware.
 // All errors is catched here.
 app.use((error, req, res, next) => {
+  if (req.file) {
+    fs.unlink(req.file.path, (err) => {
+      console.log(err);
+    });
+  }
+
   if (res.headersSent) {
     return next(error);
   }

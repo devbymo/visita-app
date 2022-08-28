@@ -183,7 +183,10 @@ const PlaceItem = (props) => {
       )}
       {/* Image */}
       <div className="place-item__image">
-        <img src={props.imageURL} alt={props.placeName} />
+        <img
+          src={`http://localhost:3000/${props.imageURL}`}
+          alt={props.placeName}
+        />
       </div>
       {/* Info */}
       <div className="place-item__info">

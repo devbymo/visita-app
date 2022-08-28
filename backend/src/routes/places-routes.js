@@ -10,6 +10,7 @@ const {
   validateUpdatePlaceInputs,
   deletePlace,
 } = require('../controllers/places-controllers');
+const ImageUpload = require('../middlewares/image-upload');
 
 // Init places routes.
 const router = Router();
@@ -27,7 +28,12 @@ router.get('/:placeId', getPlaceById);
 router.get('/user/:userId', getPlacesByUserId);
 
 // Create place.
-router.post('/create', validateCreatePlaceInputs, createPlace);
+router.post(
+  '/create',
+  ImageUpload.single('image'),
+  validateCreatePlaceInputs,
+  createPlace
+);
 
 // Update place.
 router.patch('/:placeId', validateUpdatePlaceInputs, updatePlace);

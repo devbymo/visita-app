@@ -14,7 +14,6 @@ const Map = (props) => {
   const mapRef = useRef();
   const { lat, lng } = props.location;
   const zoomValue = 10;
-  console.log(lat, lng);
 
   // It will run only once when the component is mounted, and if one of the dependencies changes, it will run again
   useEffect(() => {

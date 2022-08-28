@@ -141,9 +141,16 @@ const getPlacesByUserId = async (req, res, next) => {
 };
 
 const validateCreatePlaceInputs = async (req, res, next) => {
+  // Add image to the body if it is not provided.
+  req.body.image = req.file.path
+    ? `${req.file.destination}/${req.file.filename}`
+    : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGFyaXN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60';
   const { address, description, title, rating, image, creator } = req.body;
-
-  let { coordinates } = req.body;
+  let { lat, lng } = req.body;
+  let coordinates = {
+    lat,
+    lng,
+  };
 
   // Check if there is invalid fields passed.
   const passedFields = Object.keys(req.body);
@@ -151,7 +158,8 @@ const validateCreatePlaceInputs = async (req, res, next) => {
     'address',
     'description',
     'title',
-    'coordinates',
+    'lat',
+    'lng',
     'rating',
     'image',
     'creator',
@@ -188,7 +196,7 @@ const validateCreatePlaceInputs = async (req, res, next) => {
   }
 
   // Check coordinates.
-  if (!coordinates.lat || !coordinates.lng) {
+  if (+lat === 0 || +lng === 0) {
     try {
       // Generate coordinates.
       coordinates = await getCoordinates(title);

@@ -12,6 +12,7 @@ import Modal from '../../shared/components/UI/Modal';
 import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
 import ReactStars from 'react-rating-stars-component';
 import { AuthContext } from '../../shared/context/auth-context';
+import ImageUpload from '../../shared/components/ImageUpload/ImageUpload';
 
 const StyledNewPlace = styled.div`
   display: flex;
@@ -19,10 +20,10 @@ const StyledNewPlace = styled.div`
   justify-content: center;
   align-items: center;
   color: #000;
-  width: 100vw;
-  height: 100vh;
+  max-width: 100vw;
+  min-height: 100vh;
   font-size: 2rem;
-  padding-top: 7rem;
+  padding: 12rem 0;
 
   h1 {
     font-size: 4rem;
@@ -63,9 +64,13 @@ const initialState = {
       value: '',
       isValid: false,
     },
+    image: {
+      value: '',
+      isValid: false,
+    },
   },
   optionalInputs: {
-    rating: 0,
+    rating: 1,
     location: {
       lat: 0,
       lng: 0,
@@ -241,24 +246,22 @@ const NewPlace = () => {
         isLoading: true,
       });
 
+      const formData = new FormData();
+      formData.append('title', formState.requiredInputs.title.value);
+      formData.append('rating', formState.optionalInputs.rating);
+      formData.append(
+        'description',
+        formState.requiredInputs.description.value
+      );
+      formData.append('address', formState.requiredInputs.address.value);
+      formData.append('image', formState.requiredInputs.image.value);
+      formData.append('lat', formState.optionalInputs.location.lat);
+      formData.append('lng', formState.optionalInputs.location.lng);
+      formData.append('creator', userId);
+
       const res = await fetch('http://localhost:3000/api/v1/places/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: formState.requiredInputs.title.value,
-          address: formState.requiredInputs.address.value,
-          description: formState.requiredInputs.description.value,
-          creator: userId,
-          image:
-            'https://images.unsplash.com/photo-1550340499-a6c60fc8287c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-          coordinates: {
-            lat: formState.optionalInputs.location.lat,
-            lng: formState.optionalInputs.location.lng,
-          },
-          rating: formState.optionalInputs.rating,
-        }),
+        body: formData,
       });
 
       const resData = await res.json();
@@ -285,6 +288,10 @@ const NewPlace = () => {
       dispatch({
         type: 'ERROR',
         error: err.message,
+      });
+      dispatch({
+        type: 'LOADING',
+        isLoading: false,
       });
     }
   };
@@ -371,6 +378,11 @@ const NewPlace = () => {
           ]}
           onInput={inputChangedHandler}
           value={formState.requiredInputs.description.value}
+        />
+        <ImageUpload
+          id="image"
+          onInput={inputChangedHandler}
+          previewHeight={'15rem'}
         />
         <ReactStars
           count={5}

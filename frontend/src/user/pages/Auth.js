@@ -13,6 +13,7 @@ import { AuthContext } from '../../shared/context/auth-context';
 import ImageUpload from '../../shared/components/ImageUpload/ImageUpload';
 
 const StyledAuth = styled.div`
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -146,17 +147,16 @@ const Auth = () => {
   const signupHandler = async () => {
     try {
       dispatch({ type: 'SET_LOADING', isLoading: true });
+      let formData = new FormData();
+      formData.append('name', formState.name.value);
+      formData.append('email', formState.email.value);
+      formData.append('password', formState.password.value);
+      formData.append('address', formState.address.value);
+      formData.append('image', formState.image.value);
+
       const res = await fetch('http://localhost:3000/api/v1/users/signup', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formState.name.value,
-          email: formState.email.value,
-          password: formState.password.value,
-          address: formState.address.value,
-        }),
+        body: formData,
       });
 
       const data = await res.json();
@@ -270,7 +270,7 @@ const Auth = () => {
                 placeholder="Ex. Mohamed Yasser"
                 lable="Name *"
                 errorText="Please enter a valid name"
-                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(2)]}
+                validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(3)]}
                 onInput={inputChangeHandler}
               />
             )}

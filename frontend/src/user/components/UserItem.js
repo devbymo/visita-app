@@ -96,7 +96,15 @@ const UserItem = (props) => {
       <Link to={`/${props.id}/places`}>
         <StyledUserItem>
           <div className="image-container">
-            <img src={props.image} alt="User" className="user__image" />
+            <img
+              src={
+                props.image
+                  ? `http://localhost:3000/${props.image}`
+                  : 'https://images.unsplash.com/photo-1555952517-2e8e729e0b44?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjd8fHBlcnNvbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60'
+              }
+              alt="User profile"
+              className="user__image"
+            />
           </div>
           <div className="user__info">
             <h2 className="user__name">{props.name} ✔</h2>
