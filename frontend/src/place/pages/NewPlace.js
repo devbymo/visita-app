@@ -330,7 +330,6 @@ const NewPlace = () => {
       ) : null}
       <h1>Add New Place</h1>
       <form className="form-container">
-        <p className="error-mes">{formState.error && formState.error}</p>
         <Input
           id="title"
           element="input"
@@ -415,6 +414,7 @@ const NewPlace = () => {
             />
           )}
         </div>
+        <p className="error-mes">{formState.error && formState.error}</p>
       </form>
     </StyledNewPlace>
   );

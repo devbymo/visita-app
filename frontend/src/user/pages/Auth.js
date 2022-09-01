@@ -261,7 +261,6 @@ const Auth = () => {
         <>
           <h1>{formState.isLoginMode ? 'Login' : 'Signup'}</h1>
           <form className="form-container">
-            <p className="error-mes">{formState.error && formState.error}</p>
             {!formState.isLoginMode && (
               <Input
                 id="name"
@@ -333,6 +332,7 @@ const Auth = () => {
             <Button danger onClick={authModelHandler}>
               SWITCH TO {formState.isLoginMode ? 'SIGNUP' : 'LOGIN'}
             </Button>
+            <p className="error-mes">{formState.error && formState.error}</p>
           </form>
         </>
       )}

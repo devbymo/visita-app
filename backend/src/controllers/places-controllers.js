@@ -4,6 +4,7 @@ const isInputDataValid = require('../utils/isInputsValid');
 const getCoordinates = require('../utils/getCoordinates');
 const Place = require('../models/place');
 const User = require('../models/user');
+const fs = require('fs');
 
 // ======================
 // For Testing purposes.
@@ -366,6 +367,12 @@ const deletePlace = async (req, res, next) => {
   } catch (error) {
     return next(new HttpError(error.message, 500));
   }
+
+  // Remove the image from the server.
+  const { image: imagePath } = place;
+  fs.unlink(imagePath, (err) => {
+    console.log(err);
+  });
 
   res.status(200).json({
     message: 'Place deleted successfuly.',

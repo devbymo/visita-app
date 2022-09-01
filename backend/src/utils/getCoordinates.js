@@ -9,10 +9,19 @@ const getCoordinates = async (address) => {
   const res = await axios.get(geocodeUrl);
   const data = res.data;
 
-  const coordinates = {
-    lat: data.features[0].geometry.coordinates[1],
-    lng: data.features[0].geometry.coordinates[0],
-  };
+  let coordinates;
+
+  if (data.features.length === 0) {
+    coordinates = {
+      lat: 31.2001,
+      lng: 29.9187,
+    };
+  } else {
+    coordinates = {
+      lat: data.features[0].geometry.coordinates[1] || 31.2001,
+      lng: data.features[0].geometry.coordinates[0] || 29.9187,
+    };
+  }
 
   return coordinates;
 };
