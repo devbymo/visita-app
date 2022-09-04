@@ -190,9 +190,9 @@ const PlaceItem = (props) => {
       </div>
       {/* Info */}
       <div className="place-item__info">
-        <h2 className="place-item__name">{props.placeName} &#127919;</h2>
-        <p className="place-item__address">{props.address} &#127962;</p>
-        <p className="place-item__description">{props.description} &#127915;</p>
+        <h2 className="place-item__name">{props.placeName} ✅</h2>
+        <p className="place-item__address">{props.address}</p>
+        <p className="place-item__description">{props.description}</p>
         {createStars(props.rating)}
       </div>
       {/* Actions */}

@@ -24,7 +24,7 @@ const StyledUserItem = styled.li`
   justify-content: space-around;
   align-items: center;
   width: 40vw;
-  height: 22rem;
+  height: 27rem;
   background-color: #fff;
   cursor: pointer;
 
@@ -33,7 +33,7 @@ const StyledUserItem = styled.li`
   }
 
   .image-container {
-    flex: 2;
+    flex: 3;
     height: 100%;
     width: 100%;
     overflow: hidden;
@@ -46,7 +46,7 @@ const StyledUserItem = styled.li`
   }
 
   .user__info {
-    flex: 3;
+    flex: 4;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -107,11 +107,10 @@ const UserItem = (props) => {
             />
           </div>
           <div className="user__info">
-            <h2 className="user__name">{props.name} ✔</h2>
-            <p className="user__address">{props.address} &#127962;</p>
+            <h2 className="user__name">{props.name} ✨</h2>
+            <p className="user__address">{props.address} 🏠</p>
             <p className="user__places">
-              {props.placeNums} {props.placeNums > 1 ? 'Places' : 'Place'}{' '}
-              &#128204;
+              {props.placeNums} {props.placeNums > 1 ? 'Places' : 'Place'} 🎯
             </p>
           </div>
         </StyledUserItem>

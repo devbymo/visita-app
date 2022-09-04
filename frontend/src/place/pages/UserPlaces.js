@@ -118,7 +118,7 @@ const UserPlaces = () => {
 
   useEffect(() => {
     getUserPlaces();
-  }, []);
+  }, [userId]);
 
   return (
     <StyledPlaces>
