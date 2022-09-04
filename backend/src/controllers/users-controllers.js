@@ -82,11 +82,17 @@ const signup = async (req, res, next) => {
   }
 
   // Generate auth tokens.
-  // ....
+  let token;
+  try {
+    token = await newUser.generateAuthToken();
+  } catch (err) {
+    return next(new HttpError('Unable to signup!', 500));
+  }
 
   res.status(201).json({
     message: 'User created!',
     user: newUser.toObject({ getters: true }),
+    token,
   });
 };
 const login = async (req, res, next) => {
@@ -125,12 +131,17 @@ const login = async (req, res, next) => {
     return next(new HttpError('Unable to login!', 401));
   }
 
-  // Generate auth tokens.
-  // ....
+  // Generate auth tokens.let token;
+  try {
+    token = await user.generateAuthToken();
+  } catch (err) {
+    return next(new HttpError('Faild creating auth token!', 500));
+  }
 
   res.status(200).json({
     message: 'Logged in successfully.',
     user: user.toObject({ getters: true }),
+    token,
   });
 };
 

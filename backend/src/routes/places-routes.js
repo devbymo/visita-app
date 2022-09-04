@@ -11,6 +11,7 @@ const {
   deletePlace,
 } = require('../controllers/places-controllers');
 const ImageUpload = require('../middlewares/image-upload');
+const auth = require('../middlewares/auth');
 
 // Init places routes.
 const router = Router();
@@ -22,7 +23,7 @@ const router = Router();
 // router.get('/', getAllPlaces);
 
 // Get place by id.
-router.get('/:placeId', getPlaceById);
+router.get('/:placeId', auth, getPlaceById);
 
 // Get places by userId.
 router.get('/user/:userId', getPlacesByUserId);
@@ -30,16 +31,17 @@ router.get('/user/:userId', getPlacesByUserId);
 // Create place.
 router.post(
   '/create',
+  auth,
   ImageUpload.single('image'),
   validateCreatePlaceInputs,
   createPlace
 );
 
 // Update place.
-router.patch('/:placeId', validateUpdatePlaceInputs, updatePlace);
+router.patch('/:placeId', auth, validateUpdatePlaceInputs, updatePlace);
 
 // Delete place.
-router.delete('/:placeId', deletePlace);
+router.delete('/:placeId', auth, deletePlace);
 
 // Export places routes.
 module.exports = router;

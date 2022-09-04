@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const HttpError = require('./http-error');
+const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
 
@@ -19,8 +20,8 @@ const userSchema = new Schema(
       unique: [true, 'Email is already in use'],
       trim: true,
       validate: {
-        validator: function (v) {
-          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+        validator: function (value) {
+          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
         },
         message: (props) => `${props.value} is not a valid email!`,
       },
@@ -48,11 +49,30 @@ const userSchema = new Schema(
         ref: 'Place',
       },
     ],
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
+
+const test = new Schema({
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+});
 
 // =====================
 // MODEL METHODS
@@ -80,6 +100,30 @@ userSchema.statics.findByCredentials = async (email, password) => {
 // =====================
 // INSTANCES METHODS
 // =====================
+// Generate auth tokens.
+userSchema.methods.generateAuthToken = async function () {
+  const user = this;
+
+  // Generate token.
+  const expiresIn = '1h';
+  const secretKey = process.env.JWT_SECRET_KEY;
+  const dataBody = {
+    id: user.id.toString(),
+  };
+  const token = jwt.sign(dataBody, secretKey, {
+    expiresIn,
+  });
+
+  // Save token.
+  try {
+    user.tokens = user.tokens.concat({ token });
+    await user.save();
+  } catch (err) {
+    throw new Error(err.message);
+  }
+
+  return token;
+};
 
 // =====================
 // MODEL MIDDLEWARES
