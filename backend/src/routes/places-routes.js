@@ -25,8 +25,11 @@ const router = Router();
 // Get place by id.
 router.get('/:placeId', auth, getPlaceById);
 
-// Get places by userId.
-router.get('/user/:userId', getPlacesByUserId);
+// Update place.
+router.patch('/:placeId', auth, validateUpdatePlaceInputs, updatePlace);
+
+// Delete place.
+router.delete('/:placeId', auth, deletePlace);
 
 // Create place.
 router.post(
@@ -37,11 +40,8 @@ router.post(
   createPlace
 );
 
-// Update place.
-router.patch('/:placeId', auth, validateUpdatePlaceInputs, updatePlace);
-
-// Delete place.
-router.delete('/:placeId', auth, deletePlace);
+// Get places by userId.
+router.get('/user/:userId', getPlacesByUserId);
 
 // Export places routes.
 module.exports = router;

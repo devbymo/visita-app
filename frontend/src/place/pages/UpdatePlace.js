@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer } from 'react';
+import React, { useCallback, useEffect, useReducer, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Input from '../../shared/components/Input/Input';
@@ -12,6 +12,7 @@ import Modal from '../../shared/components/UI/Modal';
 import LoaderSpinner from '../../shared/components/LoaderSpinner/LoaderSpinner';
 import ReactStars from 'react-rating-stars-component';
 import PlaceNotFound from '../components/PlaceNotFound';
+import { AuthContext } from '../../shared/context/auth-context';
 
 const DUMMY_PLACES = [
   {
@@ -110,6 +111,8 @@ const NewPlace = () => {
   // Get the placeId from the url.
   const { placeId, creatorId } = useParams();
 
+  const { token } = useContext(AuthContext);
+
   // Managing the overall (form) state.
   let initialState = {
     title: {
@@ -204,8 +207,17 @@ const NewPlace = () => {
     });
 
     try {
-      const res = await fetch(`http://localhost:3000/api/v1/places/${placeId}`);
+      const res = await fetch(
+        `http://localhost:3000/api/v1/places/${placeId}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await res.json();
+      console.log(data);
 
       if (!data.place) {
         dispatch({
@@ -271,6 +283,7 @@ const NewPlace = () => {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             title: formState.title.value,
@@ -279,6 +292,12 @@ const NewPlace = () => {
         }
       );
       const data = await res.json();
+      if (!data.updatedPlace || data.error) {
+        dispatch({
+          type: 'ERROR',
+          error: data.error,
+        });
+      }
 
       dispatch({
         type: 'LOADING_UPDATE',
@@ -318,7 +337,7 @@ const NewPlace = () => {
 
   return (
     <StyledUpdatePlace>
-      <h1>Update Place</h1>
+      {!formState.isLoading && !formState.error && <h1>Update Place</h1>}
       {formState.isFormSubmitted ? (
         <Modal
           show={formState.isFormSubmitted}
@@ -364,67 +383,69 @@ const NewPlace = () => {
           speedInSecond=".6"
         />
       )}
-      <form className="form-container">
-        <Input
-          id="title"
-          element="input"
-          type="text"
-          lable="Title *"
-          errorText="Please enter a valid name"
-          validators={[
-            VALIDATOR_REQUIRE(),
-            VALIDATOR_MAXLENGTH(30),
-            VALIDATOR_MINLENGTH(2),
-          ]}
-          onInput={inputChangedHandler}
-          value={formState.title.value}
-          valid={formState.title.isValid}
-        />
-        <Input
-          id="description"
-          element="textarea"
-          rows="10"
-          lable="Description *"
-          errorText="Please enter a discription of at least 10 characters"
-          validators={[
-            VALIDATOR_REQUIRE(),
-            VALIDATOR_MINLENGTH(5),
-            VALIDATOR_MAXLENGTH(500),
-          ]}
-          onInput={inputChangedHandler}
-          value={formState.description.value}
-          valid={formState.description.isValid}
-        />
-        {formState.isLoading && (
-          <LoaderSpinner
-            isVisable={true}
-            color="#3498db"
-            backgroundColor="#f3f3f3"
-            size=".5"
-            widthAndHeight="4"
-            speedInSecond=".6"
+      {!formState.isLoading && !formState.error && (
+        <form className="form-container">
+          <Input
+            id="title"
+            element="input"
+            type="text"
+            lable="Title *"
+            errorText="Please enter a valid name"
+            validators={[
+              VALIDATOR_REQUIRE(),
+              VALIDATOR_MAXLENGTH(30),
+              VALIDATOR_MINLENGTH(2),
+            ]}
+            onInput={inputChangedHandler}
+            value={formState.title.value}
+            valid={formState.title.isValid}
           />
-        )}
-        {!formState.isLoadingUpdate ? (
-          <Button
-            onClick={onFormSubmitHandler}
-            disabled={
-              !formState.title.isValid || !formState.description.isValid
-            }
-          >
-            UPDATE PLACE
-          </Button>
-        ) : (
-          <LoaderSpinner
-            isVisable={true}
-            color="#3498db"
-            backgroundColor="#f3f3f3"
-            size=".5"
-            widthAndHeight="4"
-            speedInSecond=".6"
+          <Input
+            id="description"
+            element="textarea"
+            rows="10"
+            lable="Description *"
+            errorText="Please enter a discription of at least 10 characters"
+            validators={[
+              VALIDATOR_REQUIRE(),
+              VALIDATOR_MINLENGTH(5),
+              VALIDATOR_MAXLENGTH(500),
+            ]}
+            onInput={inputChangedHandler}
+            value={formState.description.value}
+            valid={formState.description.isValid}
           />
-        )}
-      </form>
+          {formState.isLoading && (
+            <LoaderSpinner
+              isVisable={true}
+              color="#3498db"
+              backgroundColor="#f3f3f3"
+              size=".5"
+              widthAndHeight="4"
+              speedInSecond=".6"
+            />
+          )}
+          {!formState.isLoadingUpdate ? (
+            <Button
+              onClick={onFormSubmitHandler}
+              disabled={
+                !formState.title.isValid || !formState.description.isValid
+              }
+            >
+              UPDATE PLACE
+            </Button>
+          ) : (
+            <LoaderSpinner
+              isVisable={true}
+              color="#3498db"
+              backgroundColor="#f3f3f3"
+              size=".5"
+              widthAndHeight="4"
+              speedInSecond=".6"
+            />
+          )}
+        </form>
+      )}
     </StyledUpdatePlace>
   );
 };

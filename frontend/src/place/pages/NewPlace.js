@@ -156,7 +156,7 @@ const formReducer = (state, action) => {
 };
 
 const NewPlace = () => {
-  const { userId } = useContext(AuthContext);
+  const { userId, token } = useContext(AuthContext);
 
   // Managing the overall (form) state.
   const [formState, dispatch] = useReducer(formReducer, initialState);
@@ -182,12 +182,6 @@ const NewPlace = () => {
 
   // Recive the location from the GetUserLocation component.
   const userLocationHandler = (lat, lng, address) => {
-    // console.log(`Lat: ${lat}`);
-    // console.log(`Lng: ${lng}`);
-    // console.log(`ShortName: ${address.shortName}`);
-    // console.log(`LongName: ${address.longName}`);
-    // console.log(`Country: ${address.country}`);
-
     // Validate the location.
     if (
       lat &&
@@ -246,6 +240,8 @@ const NewPlace = () => {
         isLoading: true,
       });
 
+      // Send the data to the server.
+
       const formData = new FormData();
       formData.append('title', formState.requiredInputs.title.value);
       formData.append('rating', formState.optionalInputs.rating);
@@ -262,6 +258,9 @@ const NewPlace = () => {
       const res = await fetch('http://localhost:3000/api/v1/places/create', {
         method: 'POST',
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       const resData = await res.json();

@@ -77,7 +77,7 @@ const StyledPlaceItem = styled.li`
 `;
 const PlaceItem = (props) => {
   // Auth context.
-  const { isAuthenticated, userId } = useContext(AuthContext);
+  const { isAuthenticated, userId, token } = useContext(AuthContext);
 
   // Map modal handlers.
   const [showMapModal, setShowMapModal] = useState(false);
@@ -108,6 +108,7 @@ const PlaceItem = (props) => {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
         }
       );

@@ -88,6 +88,13 @@ const getAllPlaces = async (req, res, next) => {
 const getPlaceById = async (req, res, next) => {
   const { placeId } = req.params;
 
+  // Allow to authanticated users only to get the place by ID.
+  // Authanticated user should have that place first.
+  const isAuthanticatedUserContainsThePlace = req.user.places.includes(placeId);
+  if (!isAuthanticatedUserContainsThePlace) {
+    return next(new HttpError('You are not allowed to get this place.', 401));
+  }
+
   // Find the place.
   let place;
   try {
@@ -110,14 +117,22 @@ const getPlacesByUserId = async (req, res, next) => {
   const { userId } = req.params;
 
   // Find the places.
-  // let places;
+  // let placesCreatedByUser;
   // try {
-  //   places = await Place.find({ creator: userId });
+  //   placesCreatedByUser = await Place.find({ creator: userId });
   // } catch (error) {
   //   return next(new HttpError(error.message, 500));
   // }
 
+  // // Check if the places exists.
+  // if (!placesCreatedByUser || placesCreatedByUser.length === 0) {
+  //   return next(
+  //     new HttpError('Could not find places for the provided user id.', 404)
+  //   );
+  // }
+
   // OR using the populate method.
+
   let placesCreatedByUser;
   try {
     placesCreatedByUser = await User.findOne({ _id: userId }).populate(
@@ -153,6 +168,16 @@ const validateCreatePlaceInputs = async (req, res, next) => {
     lng,
   };
 
+  // Validate if the authanticated user is the creator of the place.
+  if (req.user.id !== creator) {
+    return next(
+      new HttpError(
+        'You are not allowed to create a place for another user.',
+        401
+      )
+    );
+  }
+
   // Check if there is invalid fields passed.
   const passedFields = Object.keys(req.body);
   const allowedFields = [
@@ -186,14 +211,13 @@ const validateCreatePlaceInputs = async (req, res, next) => {
   }
 
   // Check if user id is valid.
-  let user;
-  try {
-    user = await User.findOne({ _id: creator });
-  } catch (error) {
-    return next(new HttpError(error.message, 500));
-  }
-  if (!user) {
-    return next(new HttpError('Could not find user for the provided id!', 404));
+  if (req.user.id !== creator) {
+    return next(
+      new HttpError(
+        'You are not allowed to create a place for another user.',
+        401
+      )
+    );
   }
 
   // Check coordinates.
@@ -203,7 +227,6 @@ const validateCreatePlaceInputs = async (req, res, next) => {
       coordinates = await getCoordinates(title);
     } catch (err) {
       // If there is an error generating coordinates we will use the default coordinates.
-      console.log(err.message);
     }
   }
 
@@ -223,7 +246,6 @@ const validateCreatePlaceInputs = async (req, res, next) => {
 
   // Forward the place to be created.
   req.newPlace = newPlace;
-  req.user = user;
   next();
 };
 
@@ -268,6 +290,17 @@ const createPlace = async (req, res, next) => {
 
 const validateUpdatePlaceInputs = async (req, res, next) => {
   const { placeId } = req.params;
+
+  // Check if the authanticated user is the creator of the place.
+  const isAuthanticatedUserContainsThePlace = req.user.places.includes(placeId);
+  if (!isAuthanticatedUserContainsThePlace) {
+    return next(
+      new HttpError(
+        'You are not allowed to update a place that you did not create.',
+        401
+      )
+    );
+  }
 
   // Check if there is invalid fields passed.
   const passedUpdates = Object.keys(req.body);
@@ -325,12 +358,23 @@ const updatePlace = async (req, res, next) => {
 
   res.status(200).json({
     message: 'Place updated successfully.',
-    updatePlace: placeToUpdate.toObject({ getters: true }),
+    updatedPlace: placeToUpdate.toObject({ getters: true }),
   });
 };
 
 const deletePlace = async (req, res, next) => {
   const { placeId } = req.params;
+
+  // Check if the authanticated user is the creator of the place.
+  const isAuthanticatedUserContainsThePlace = req.user.places.includes(placeId);
+  if (!isAuthanticatedUserContainsThePlace) {
+    return next(
+      new HttpError(
+        'You are not allowed to update a place that you did not create.',
+        401
+      )
+    );
+  }
 
   // Find the place.
   let place;
@@ -370,9 +414,7 @@ const deletePlace = async (req, res, next) => {
 
   // Remove the image from the server.
   const { image: imagePath } = place;
-  fs.unlink(imagePath, (err) => {
-    console.log(err);
-  });
+  fs.unlink(imagePath, (err) => {});
 
   res.status(200).json({
     message: 'Place deleted successfuly.',

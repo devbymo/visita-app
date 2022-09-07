@@ -13,9 +13,9 @@ const getUsers = async (req, res, next) => {
   //   );
   // }
 
-  // Get all users.
+  // Get all users & limit the returned data.
   try {
-    users = await User.find({}, '-password');
+    users = await User.find({}, '-password -tokens -__v -createdAt -updatedAt');
   } catch (error) {
     return next(
       new HttpError('Unable to retrive users, please try again!', 500)
@@ -91,7 +91,13 @@ const signup = async (req, res, next) => {
 
   res.status(201).json({
     message: 'User created!',
-    user: newUser.toObject({ getters: true }),
+    user: {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      address: newUser.address,
+      image: newUser.image,
+    },
     token,
   });
 };
@@ -135,18 +141,38 @@ const login = async (req, res, next) => {
   try {
     token = await user.generateAuthToken();
   } catch (err) {
-    return next(new HttpError('Faild creating auth token!', 500));
+    return next(new HttpError('Unable to login!', 500));
   }
 
   res.status(200).json({
     message: 'Logged in successfully.',
-    user: user.toObject({ getters: true }),
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      address: user.address,
+      image: user.image,
+    },
     token,
   });
+};
+
+const logout = async (req, res, next) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token;
+    });
+    await req.user.save();
+  } catch (error) {
+    return next(new HttpError('Unable to logout!', 500));
+  }
+
+  res.status(200).json({ message: 'Logged out successfully.' });
 };
 
 module.exports = {
   getUsers,
   signup,
   login,
+  logout,
 };

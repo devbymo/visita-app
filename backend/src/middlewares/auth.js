@@ -7,7 +7,7 @@ const auth = async (req, res, next) => {
 
   try {
     // Get token from header.
-    const token = req.headers.authorization.replace('Bearer ', ''); // Authori    zation: 'Bearer TOKEN'
+    const token = req.headers.authorization.replace('Bearer ', ''); // Authorization: 'Bearer TOKEN'
     if (!token) {
       throw new Error();
     }

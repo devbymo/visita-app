@@ -80,7 +80,6 @@ const Auth = () => {
     isFormValid: false,
     error: null,
   };
-
   const formReducer = (state, action) => {
     switch (action.type) {
       case 'INPUT_CHANGE':
@@ -169,8 +168,11 @@ const Auth = () => {
         });
       } else {
         dispatch({ type: 'RESET' });
-        login(data.user.id);
+        const expirationTime = new Date(new Date().getTime() + 1000 * 60 * 60); // 1 hour
+        login(data.user.id, data.token, expirationTime);
       }
+
+      dispatch({ type: 'SET_FORM_SUBMITTED', isFormSubmitted: true });
     } catch (err) {
       dispatch({ type: 'SET_ERROR', error: err.message });
       dispatch({ type: 'SET_LOADING', isLoading: false });
@@ -201,7 +203,8 @@ const Auth = () => {
         });
       } else {
         dispatch({ type: 'RESET' });
-        login(data.user.id);
+        const expirationTime = new Date(new Date().getTime() + 1000 * 60 * 60); // 1H
+        login(data.user.id, data.token, expirationTime);
       }
     } catch (err) {
       dispatch({ type: 'SET_ERROR', error: err.message });
