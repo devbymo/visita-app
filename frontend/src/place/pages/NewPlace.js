@@ -48,6 +48,18 @@ const StyledNewPlace = styled.div`
       color: #ff0000;
     }
   }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .form-container {
+      width: 80vw;
+      padding: 5rem 4rem;
+    }
+
+    h1 {
+      margin-top: 7rem;
+    }
+  }
 `;
 
 const initialState = {
@@ -310,6 +322,8 @@ const NewPlace = () => {
           closeModal={closeModalHandler}
           width="30vw"
           height="20vh"
+          widthResponsive="80vw"
+          heightResponsive="20vh"
           modalBackgroundColor="#fff"
           modalTextColor="#000"
           modalFontSize="2.2rem"

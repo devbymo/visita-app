@@ -44,6 +44,11 @@ const StyledModal = styled.div`
   }
 
   z-index: 1000;
+
+  @media (max-width: 768px) {
+    width: ${(props) => props.widthResponsive || '80vw'};
+    height: ${(props) => props.heightResponsive || '30vh'};
+  }
 `;
 
 const StyledOverlay = styled.div`
@@ -60,6 +65,11 @@ const StyledOverlay = styled.div`
     props.overlayBackgroundColor || 'rgba(0, 0, 0, 0.5)'};
 
   z-index: 999;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const Overlay = (props) => {
@@ -96,6 +106,8 @@ const Modal = (props) => {
         modalBorderRadius={props.modalBorderRadius}
         modalBorder={props.modalBorder}
         modalPadding={props.modalPadding}
+        widthResponsive={props.widthResponsive}
+        heightResponsive={props.heightResponsive}
       >
         <div className="Content">{props.children}</div>
         {props.button && (

@@ -72,21 +72,9 @@ const StyledUserItem = styled.li`
     }
   }
 
-  // 1200px or smaller
-  @media only screen and (max-width: 1200px) {
-    width: 70vw;
-  }
-
-  // 1200px or smaller
-  @media only screen and (max-width: 900px) {
-    width: 90vw;
-  }
-
-  // 1200px or smaller
-  @media only screen and (max-width: 500px) {
-    width: 92vw;
-    height: 15vh;
-    margin: 0 2rem;
+  /* Responsive */
+  @media (max-width: 768px) {
+    width: 80vw;
   }
 `;
 

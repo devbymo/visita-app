@@ -49,6 +49,18 @@ const StyledAuth = styled.div`
     color: red;
     padding-top: 1rem;
   }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .form-container {
+      width: 80vw;
+      padding: 5rem;
+    }
+
+    h1 {
+      margin-top: 10rem;
+    }
+  }
 `;
 
 const Auth = () => {

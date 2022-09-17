@@ -72,7 +72,11 @@ const StyledPlaceItem = styled.li`
     align-items: center;
     width: 100%;
     height: 100%;
-    /* background-color: #ebebeb; */
+  }
+
+  /* Rsponsive */
+  @media (max-width: 768px) {
+    width: 80vw;
   }
 `;
 const PlaceItem = (props) => {
@@ -145,7 +149,9 @@ const PlaceItem = (props) => {
           show={showMapModal}
           buttonText="Close"
           width="45vw"
+          widthResponsive="80vw"
           height="50vh"
+          heightResponsive="40vh"
           button={true}
           modalPadding="0"
           modalBorder="2px solid #fafafa"
@@ -164,6 +170,8 @@ const PlaceItem = (props) => {
           closeModal={closeRemoveModalHandler}
           width="30vw"
           height="20vh"
+          widthResponsive="80vw"
+          heightResponsive="20vh"
           modalBackgroundColor="#fff"
           modalTextColor="#000"
           modalFontSize="2.2rem"

@@ -105,6 +105,14 @@ const StyledUpdatePlace = styled.div`
   .error-msg {
     color: red;
   }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .form-container {
+      width: 70vw;
+      padding: 5rem 4rem;
+    }
+  }
 `;
 
 const NewPlace = () => {
@@ -185,18 +193,10 @@ const NewPlace = () => {
     [dispatch]
   );
 
-  // Recive ratingValue from Rating component.
-  const ratingChangedHandler = (value) => {
-    dispatch({
-      type: 'INPUT_CHANGE',
-      value: value,
-    });
-  };
-
   const closeModalHandler = () => {
-    // By resetting the form we can close the modal.
+    // By submitting the form we can close the modal.
     dispatch({
-      type: 'RESET_FORM',
+      type: 'FORM_SUBMITTED',
     });
   };
 
@@ -217,7 +217,6 @@ const NewPlace = () => {
         }
       );
       const data = await res.json();
-      console.log(data);
 
       if (!data.place) {
         dispatch({
@@ -344,6 +343,8 @@ const NewPlace = () => {
           closeModal={closeModalHandler}
           width="30vw"
           height="20vh"
+          widthResponsive="80vw"
+          heightResponsive="20vh"
           modalBackgroundColor="#fff"
           modalTextColor="#000"
           modalFontSize="2.2rem"

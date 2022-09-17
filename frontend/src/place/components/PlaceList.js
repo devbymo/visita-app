@@ -1,10 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PlaceItem from './PlaceItem';
 
 import styled from 'styled-components';
 
 const StyledPlaceList = styled.div`
   list-style-type: none;
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    margin-top: 10rem;
+  }
 `;
 
 const PlaceList = (props) => {

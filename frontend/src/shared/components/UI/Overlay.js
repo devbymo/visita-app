@@ -13,6 +13,7 @@ const StyledOverlay = styled.div`
   display: ${(props) => (props.show ? 'block' : 'none')};
 
   background: rgba(49, 49, 49, 0.8);
+  z-index: 999;
 `;
 
 const Overlay = (props) => {
