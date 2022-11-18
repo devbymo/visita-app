@@ -4,6 +4,14 @@
 
 This is a RESTful API for serving client requests. It is built using Node.js and Express.js and uses MongoDB as a database.
 
+## TODO
+
+- [ ] Add tests ⏳
+- [ ] Add forget passwrod endpoint ⏳
+- [ ] Add send welcome email endpoint ⏳
+- [ ] Add more documentation ⏳
+- [ ] Create a frontend ✅
+
 ## ENV Variables Required
 
 ```
