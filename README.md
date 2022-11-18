@@ -1,6 +1,6 @@
 # Backend ✅
-Online at: 
-- `https://visita.onrender.com` for testing purpes (Backend)
+Online at: (free host)
+- `https://visita.onrender.com` (Backend)
 - `https://visita-app-v1.web.app/` (Frontend)
 
 
