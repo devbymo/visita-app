@@ -1,33 +1,55 @@
 const express = require('express');
 require('./db/mongoose');
-const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
-
+const helmet = require('helmet');
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
 const HttpError = require('./models/http-error');
+const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 
 const app = express();
 
 // =====================
-// MIDDLEWARE
+// MIDDLEWARES
 // =====================
-app.use(bodyParser.json());
-// OR
-// app.use(express.json())
+
+// Parse incoming requests data.
+app.use(express.json());
+
+// CORS middleware
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200,
+  methods: 'GET,PATCH,POST,DELETE',
+  preflightContinue: false,
+};
+app.use(cors(corsOptions));
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Headers', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+//   res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
+//   next();
+// });
+
+// HTTP security headers.
+app.use(helmet());
+
+// Apply rate limiting to all requests.
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 100, // limit each IP to 100 requests per windowMs
+  standerdHeaders: true, // return rate limit headers in response
+  message: 'Too many requests from this IP, please try again in an hour.',
+});
+app.use(limiter);
 
 // Staticly serve the images folder.
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
-// CORS middleware
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
-  next();
-});
-
+// API routes.
 app.use('/api/v1/places', placesRoutes);
 app.use('/api/v1/users', usersRoutes);
 
@@ -39,6 +61,7 @@ app.use((req, res, next) => {
 // Genaric error handler middleware.
 // All errors is catched here.
 app.use((error, req, res, next) => {
+  // While creating the place OR removing the place if the session fails to commit, we will remove the image from the server.
   if (req.file) {
     fs.unlink(req.file.path, (err) => {
       console.log(err);

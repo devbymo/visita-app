@@ -1,14 +1,12 @@
 const { Router } = require('express');
 
-const {
-  getPlaceById,
-  getPlacesByUserId,
-  createPlace,
-  validateCreatePlaceInputs,
-  updatePlace,
-  validateUpdatePlaceInputs,
-  deletePlace,
-} = require('../controllers/places-controllers');
+const getPlaceById = require('../controllers/places/getPlaceById');
+const getPlacesByUserId = require('../controllers/places/getPlacesByUserId');
+const createPlace = require('../controllers/places/createPlace');
+const updatePlace = require('../controllers/places/updatePlace');
+const deletePlace = require('../controllers/places/deletePlace');
+const validateUpdatePlaceInputs = require('../controllers/places/validateUpdatePlaceInputs');
+const validateCreatePlaceInputs = require('../controllers/places/validateCreatePlaceInputs');
 const ImageUpload = require('../middlewares/image-upload');
 const auth = require('../middlewares/auth');
 
